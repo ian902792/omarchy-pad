@@ -70,8 +70,8 @@ GitHub private repo `ian902792/omarchy-pad`。平板與 Mac 都是 clone，改�
 ## Claude Code
 
 `claude` 是 `bin/claude` 包裝：用 `$PREFIX/glibc/lib/ld-linux-aarch64.so.1` 直接啟動 glibc 版本。
-Termux 的 `LD_PRELOAD`（bionic 函式庫）無法載入 glibc 程序，所以只對 claude 本身拿掉，再透過 `CLAUDE_ENV_FILE`
-在 Claude 的每個 Bash 指令前補回（`#!/usr/bin/env` 腳本需要它）。不用 `grun`：它會把 glibc 的 coreutils 放到 PATH 前面。
+Termux 的 `LD_PRELOAD`（bionic 函式庫）無法載入 glibc 程序，所以只對 claude 本身拿掉；Claude 的 Bash 工具改用
+`CLAUDE_CODE_SHELL` 指向的小包裝，啟動 bash 前補回（bash 本身要載入它，`#!/usr/bin/env` 腳本才跑得動）。不用 `grun`：它會把 glibc 的 coreutils 放到 PATH 前面。
 自動更新已關閉（會覆蓋包裝）；更新 = 重跑 `install.sh`，或 `CLAUDE_VER=2.x.y bash install.sh` 指定版本。
 
 ## Termux:X11 / Android 設定（install 時沒有自動做，已在本機手動設定過）

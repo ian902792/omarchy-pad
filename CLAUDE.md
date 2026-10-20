@@ -48,7 +48,7 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
   `settings put global settings_enable_monitor_phantom_procs false`. Re-check after a ColorOS update.
 - Termux in background cannot open Android activities (`termux-open-url` fails) — ColorOS policy.
 - Android only exposes `/proc/meminfo` and `thermal_zone0`; no battery/CPU/network stats.
-- Claude Code: linux-arm64 glibc build run via `bin/claude` (glibc ld.so, LD_PRELOAD dropped, restored for Bash via CLAUDE_ENV_FILE). No self-update; update with `install.sh`.
+- Claude Code: linux-arm64 glibc build run via `bin/claude` (glibc ld.so, LD_PRELOAD dropped, restored for the Bash tool by a CLAUDE_CODE_SHELL wrapper so bash itself loads termux-exec and `#!/usr/bin/env` scripts run). No self-update; update with `install.sh`.
 - Chinese input = fcitx5 + 自由大新 table (`ime/newcj.cin`, built by install.sh into `~/.local/share/fcitx5/table/`).
   Start it only via `bin/omp-ime`: fcitx5 treats Termux as Android (on-screen-keyboard mode) and never shows the
   candidate window unless a fake `org.fcitx.Fcitx5.VirtualKeyboard` D-Bus owner exists. Do not mark classicui

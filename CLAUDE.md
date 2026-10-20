@@ -21,6 +21,7 @@ Synced via GitHub (`git@github.com:ian902792/omarchy-pad.git`, private). Copies:
 | `config/lazygit/config.yml` | `~/.config/lazygit/config.yml` | next `lg` |
 | `bin/omp-status` (battery block, red < 25%) | i3bar `status_command` | `i3-msg restart` |
 | `bin/omp-tile` (side-by-side layouts, watermark on/off; Super+S = `omp-tile toggle`) | daemon from i3 `exec_always` | `i3-msg restart`; `omp-tile test` = self-check |
+| `bin/omp-wallpaper` (feh, re-set on every RandR resize: displayScale lands after i3 starts, else 2x2 tiling) | i3 `exec_always` | `i3-msg restart` |
 | `bin/*` | `~/.local/bin/*` | immediate |
 | `config/kitty/watermark.png` | generated, gitignored | `omp-watermark` (entries are the `#:` lines in `config/i3/config`) |
 

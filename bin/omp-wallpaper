@@ -1,0 +1,10 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Set the wallpaper and redo it whenever the X screen resizes. start.sh changes displayScale after i3 is up,
+# so a wallpaper set at the first (half) resolution got tiled 2x2 by the X root window.
+# Run from i3 exec_always; a new instance replaces the old watcher.
+pkill -f 'xev -root -event randr' 2>/dev/null
+set_bg() { feh --no-fehbg --bg-fill ~/.local/share/omarchy-pad/wallpaper.jpg || xsetroot -solid "#1a1b26"; }
+set_bg
+xev -root -event randr | while read -r line; do
+    case "$line" in RRScreenChangeNotify*) set_bg ;; esac
+done

@@ -34,7 +34,6 @@ ln -sf "$ROOT/config/Xresources" ~/.Xresources
 # photos open in ristretto (Thunar double-click)
 xdg-mime default org.xfce.ristretto.desktop image/jpeg image/png image/gif image/webp image/heic
 for f in "$ROOT"/bin/*; do ln -sf "$f" ~/.local/bin/; done
-"$ROOT/bin/omp-watermark" >/dev/null   # key cheat sheet behind kitty text
 mkdir -p ~/.local/lib && clang -shared -fPIC -O2 -o ~/.local/lib/omp-notag.so "$ROOT/lib/omp-notag.c"
 ln -sf "$ROOT/config/starship.toml" ~/.config/starship.toml
 # git diff/log/show through delta (config/gitconfig); ~/.gitconfig keeps your own settings

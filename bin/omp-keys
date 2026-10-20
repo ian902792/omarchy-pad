@@ -1,0 +1,116 @@
+#!/data/data/com.termux/files/usr/bin/python
+# Key cheat sheet in rofi. Entries come from "#:" lines in config/i3/config (no restart needed after editing).
+#   omp-keys launcher  Super+Space: rofi combi with the "Key Cheat Sheet" entry above the apps (drun). Started from here
+#                      because i3 splits commands at "," (as in -combi-modi keys,drun).
+#   omp-keys list      the cheat sheet under a system info block; Enter runs the selected binding through i3-msg
+#   omp-keys           rofi script mode: prints the entry, or opens the list when it's picked
+import html, os, re, subprocess, sys, time, unicodedata
+
+ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
+NAMES = {"$mod": "Super", "space": "Space", "Escape": "Escape", "Return": "Return",
+         "Left": "←", "Right": "→", "Up": "↑", "Down": "↓", "minus": "-", "equal": "="}
+ENTRY = "Key Cheat Sheet"
+LABEL, VALUE, KEY = "#bb9af7", "#c0caf5", "#7dcfff"   # Tokyo Night purple / white / cyan
+
+
+def label(combo):   # "$mod+Shift+s" -> "Super+Shift+S"
+    return "+".join(NAMES.get(k, k.upper() if len(k) == 1 else k) for k in combo.split("+"))
+
+
+def keys(conf):
+    """[(keys, description, i3 command or None)]"""
+    out, pending = [], None
+    for line in open(conf, encoding="utf-8"):
+        line = line.strip()
+        if line.startswith("#:"):
+            text = line[2:].strip()
+            if "|" in text:
+                k, d = (x.strip() for x in text.split("|", 1))
+                out.append((k, d, None))
+            else:
+                pending = text
+        elif pending and line.startswith("bindsym "):
+            _, combo, cmd = re.split(r"\s+", line, maxsplit=2)
+            out.append((label(combo), pending, cmd))
+            pending = None
+    return out
+
+
+def width(s):   # terminal columns: CJK characters take two
+    return sum(2 if unicodedata.east_asian_width(c) in "WF" else 1 for c in s)
+
+
+def dpi():
+    return os.environ.get("OMP_DPI", "180")
+
+
+def launcher():
+    os.execvp("rofi", ["rofi", "-show", "combi", "-modi", "combi", "-combi-modi", f"keys:{os.path.realpath(__file__)},drun",
+                       "-combi-display-format", "{text}", "-display-combi", "Apps", "-dpi", dpi()])
+
+
+def run(*cmd):
+    try:
+        return subprocess.run(cmd, capture_output=True, text=True, timeout=5).stdout.strip()
+    except OSError:
+        return ""
+
+
+def info():   # fastfetch-style block above the keys
+    prop = lambda k: run("/system/bin/getprop", k)
+    soc = prop("ro.soc.model")
+    cpu = {"SM8750": "Snapdragon 8 Elite"}.get(soc[:6], soc)
+    mem = int(next(l.split()[1] for l in open("/proc/meminfo") if l.startswith("MemTotal"))) / 2**20
+    icons = re.search(r"icon-theme-name=(.*)", open(os.path.join(ROOT, "config", "gtk-3.0", "settings.ini")).read())
+    sc = int(os.environ.get("OMP_SCALE", "75"))
+    size = "x".join(re.findall(r"(?:Width|Height): (\d+)", run("xwininfo", "-root")))
+    return [
+        ("OS", f"Termux on Android {prop('ro.build.version.release')} (ColorOS {prop('ro.build.version.oplusrom').lstrip('V')})"),
+        ("Kernel", "Linux " + run("uname", "-r").split("-g")[0]),
+        ("WM", run("i3", "--version").split(" (")[0].replace(" version", "")),
+        ("Terminal", " ".join(run("kitty", "--version").split()[:2])),
+        ("Shell", "bash " + run("bash", "-c", "echo ${BASH_VERSION%%(*}")),
+        ("Theme", "Tokyo Night · " + (icons.group(1).strip() if icons else "")),
+        ("CPU", f"{cpu} ({soc}) · {os.cpu_count()} cores"),
+        ("GPU", "Adreno 830 · zink / Turnip"),
+        ("Memory", f"{mem:.0f} GiB"),
+        ("Display", f"{size} ({sc}% of 3392x2400)"),
+    ]
+
+
+def mesg():
+    rows = info()
+    w = max(len(k) for k, _ in rows)
+    vw = max(width(v) for _, v in rows)   # pad to one width so the centered block keeps its columns
+    return "\n".join(f'<span color="{LABEL}">{k.rjust(w)}</span>  <span color="{VALUE}">{html.escape(v)}</span>'
+                     + " " * (vw - width(v)) for k, v in rows)
+
+
+def show():
+    rows = keys(os.path.join(ROOT, "config", "i3", "config"))
+    w = max(len(k) for k, _, _ in rows)
+    lines = [f"{k.rjust(w)}   {d}" for k, d, _ in rows]
+    menu = "\n".join(f'<span color="{KEY}">{html.escape(k.rjust(w))}</span>   {html.escape(d)}' for k, d, _ in rows)
+    msg = mesg()
+    cols = max(width(l) for l in lines + re.sub("<[^>]+>", "", msg).split("\n")) + 4   # + element padding
+    for _ in range(10):   # the launcher's rofi may still hold the keyboard grab for a moment
+        r = subprocess.run(["rofi", "-dmenu", "-i", "-p", "Keys", "-format", "i", "-no-custom", "-markup-rows", "-mesg", msg,
+                            "-dpi", dpi(), "-theme-str", f"window {{ width: {cols}ch; }} textbox {{ horizontal-align: 0.5; }}"],
+                           input=menu, capture_output=True, text=True)
+        if "grab" not in r.stderr.lower():
+            break
+        time.sleep(0.1)
+    if r.returncode == 0 and r.stdout.strip():
+        cmd = rows[int(r.stdout)][2]
+        if cmd:
+            subprocess.run(["i3-msg", "-q", cmd])
+
+
+if sys.argv[1:] == ["launcher"]:
+    launcher()
+elif sys.argv[1:] == ["list"]:
+    show()
+elif sys.argv[1:] == [ENTRY]:   # picked in the launcher: open the list once rofi has closed
+    subprocess.Popen([os.path.realpath(__file__), "list"], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+else:
+    print(f"{ENTRY}\0icon\x1finput-keyboard")

@@ -10,7 +10,7 @@ OPPO Pad 4 Pro（ColorOS / Android 16）上的鍵盤導向開發桌面：**Termu
 | 部分 | 選擇 | 原因 |
 |---|---|---|
 | 視窗管理 | i3 + i3bar/i3status | 一個設定檔包含快捷鍵、配色、狀態列 |
-| 終端機 | kitty（zink：Adreno GPU） | 支援背景圖：快捷鍵浮水印（由 `config/i3/config` 裡的 `#:` 註解產生，桌面啟動或 Super+Shift+R 時自動更新）。用 GPU 比軟體 GL（llvmpipe）省約 9 倍 CPU |
+| 終端機 | kitty（zink：Adreno GPU） | 用 GPU 比軟體 GL（llvmpipe）省約 9 倍 CPU |
 | 啟動器 / 通知 | rofi / dunst | |
 | 字型 | JetBrainsMono Nerd Font | |
 | 解析度 / 縮放 | X 以原生的 `OMP_SCALE`%（預設 75% = 2544×1800）繪製，DPI 跟著換算 | 延遲跟像素數成正比：100% 最清晰、50% 最快；改 `~/.config/omarchy-pad/env` 後重開桌面。GTK 用 `GDK_SCALE=2 GDK_DPI_SCALE=0.5` |
@@ -48,13 +48,12 @@ GitHub private repo `ian902792/omarchy-pad`。平板與 Mac 都是 clone，改�
 ## 快捷鍵（Super）
 
 每個桌面預設是**分頁（tabbed）**：每個視窗一個分頁、各自全螢幕，上方是分頁列；Super+←/→ 切換分頁。
-要並排就在該桌面按 Super+S（再按一次回到分頁）。並排時自動排版（`bin/omp-tile`）：2 個左右、3 個左一右二、4 個田字、5 個以上等寬直欄；
-並排時終端機不顯示浮水印。
+要並排就在該桌面按 Super+S（再按一次回到分頁）。並排時自動排版（`bin/omp-tile`）：2 個左右、3 個左一右二、4 個田字、5 個以上等寬直欄。
 
 | 鍵 | 動作 |
 |---|---|
 | Super+T | 新終端機分頁（Super+Return 實體鍵盤會被 ColorOS 攔走） |
-| Super+Space / Super+Tab | 應用程式啟動器 / 視窗切換 |
+| Super+Space / Super+Tab | 應用程式啟動器（第一項 Key Cheat Sheet 是快捷鍵表，加上系統資訊；可搜尋、Enter 直接執行；由 `config/i3/config` 的 `#:` 註解產生）/ 視窗切換 |
 | **Super+M** | 切到 herdr 分頁；還沒開就 mosh 到 Mac 開一個（只會有一條連線） |
 | Super+E | Thunar（側邊欄有 下載 / 圖片 / 截圖 / 相機；照片用 ristretto 開） |
 | Super+Shift+S | 截圖，存到 Android 的 圖片/Screenshots |

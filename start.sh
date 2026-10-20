@@ -34,6 +34,5 @@ nohup termux-x11 :0 -ac -noreset -xstartup "$HOME/.local/bin/omp-session" \
       timeout 5 termux-x11-preference displayResolutionMode:scaled displayScale:$((10000 / OMP_SCALE)) >/dev/null 2>&1 && break
       sleep 1
   done ) &
-"$(dirname "$0")/bin/omp-watermark" >/dev/null 2>&1 &
 # Remote access while the desktop runs: sshd on 8022 (key-only); the wake lock above keeps Termux alive.
 pgrep -x sshd >/dev/null || sshd

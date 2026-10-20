@@ -1,5 +1,5 @@
 # omarchy-pad i3 config — Omarchy-style keys on X11 (Termux:X11). Tokyo Night.
-# Lines starting with #: become the key cheat sheet behind kitty (bin/omp-watermark):
+# Lines starting with #: become the key cheat sheet, the first entry of Super+Space (bin/omp-keys):
 #   "#: text" labels the bindsym below it; "#: Keys | text" is a free entry.
 # Super is the modifier. If ColorOS eats Super on your keyboard, change Mod4 -> Mod1 (Alt).
 set $mod Mod4
@@ -29,7 +29,7 @@ client.background       #1a1b26
 #: 新終端機分頁
 bindsym $mod+t exec kitty
 #: 啟動 App
-bindsym $mod+space exec rofi -show drun -dpi $OMP_DPI
+bindsym $mod+space exec omp-keys launcher
 #: 切換視窗
 bindsym $mod+Tab exec rofi -show window -dpi $OMP_DPI
 # Super+M: focus the herdr tab if it's open, otherwise open it (one mosh session, not one per press)
@@ -113,12 +113,10 @@ bar {
 }
 
 exec --no-startup-id dunst
-# side-by-side layouts and watermark on/off (bin/omp-tile); restarts with i3
+# side-by-side layouts (bin/omp-tile); restarts with i3
 exec_always --no-startup-id omp-tile daemon
 # Thunar sidebar: wider, no Network section (Thunar keeps these in xfconf, not in a file we can link)
 exec --no-startup-id sh -c 'xfconf-query -c thunar -p /last-separator-position -n -t int -s 240; xfconf-query -c thunar -p /hidden-bookmarks -n -a -t string -s network:///'
-# rebuild the cheat sheet from the #: lines on every start and Super+Shift+R (i3 restart; plain reload skips it)
-exec_always --no-startup-id omp-watermark
 exec --no-startup-id omp-ime
 # wallpaper (install.sh downloads it), re-set on every resolution change (bin/omp-wallpaper)
 exec_always --no-startup-id omp-wallpaper

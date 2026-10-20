@@ -1,4 +1,3 @@
 logs/
 *.log
 *.tmp
-config/kitty/watermark.png

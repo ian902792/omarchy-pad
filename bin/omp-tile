@@ -1,14 +1,12 @@
 #!/data/data/com.termux/files/usr/bin/python
-# Side-by-side ("split") workspaces get a fixed layout, and their kitty windows drop the watermark:
+# Side-by-side ("split") workspaces get a fixed layout:
 #   2 windows: 1 | 2      3 windows: 1 | 2/3      4 windows: 2x2 grid      5+: equal columns
-# Tabbed workspaces (the default) are left alone; their kitty windows get the watermark (kitty.conf has none).
+# Tabbed workspaces (the default) are left alone.
 #   omp-tile daemon   follow i3 window events (i3 autostart; replaces a running daemon)
 #   omp-tile toggle   Super+S: switch the focused workspace between tabbed and split
 #   omp-tile test     self-check of the layout logic, no i3 needed
 import json, os, signal, subprocess, sys, time
 
-SOCK = os.path.join(os.environ.get("TMPDIR", "/tmp"), "kitty-{}")   # listen_on in kitty.conf
-WATERMARK = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "config", "kitty", "watermark.png")
 TARGET = {2: "h[L,L]", 3: "h[L,v[L,L]]", 4: "h[v[L,L],v[L,L]]"}
 
 
@@ -68,43 +66,6 @@ def arrange(ws, focused):
     i3("; ".join(plan([w["id"] for w in wins]) + ([f"[con_id={focused}] focus"] if focused else [])))
 
 
-pids = {}
-
-
-def kitty_pid(wid):
-    if not pids.get(wid):   # not cached yet, or the window had no _NET_WM_PID yet
-        out = subprocess.run(["xprop", "-id", str(wid), "_NET_WM_PID"], capture_output=True, text=True).stdout
-        pids[wid] = out.split("=")[-1].strip() if "=" in out else None
-    return pids[wid]
-
-
-shown, seen, fails = {}, {}, {}
-
-
-def watermark(ws, on):
-    """False while a kitty still needs another try: a new kitty opens its socket after the window maps,
-    and may not have its window ready in the first second."""
-    ok = True
-    for w in leaves(ws):
-        wid = w["window"]
-        if (w.get("window_properties") or {}).get("class") != "kitty" or shown.get(wid) == on:
-            continue
-        seen.setdefault(wid, time.time())
-        pid = kitty_pid(wid)
-        if pid and subprocess.run(["kitten", "@", "--to", "unix:" + SOCK.format(pid), "set-background-image",
-                                   "--all", WATERMARK if on else "none"], capture_output=True).returncode == 0:
-            if time.time() - seen[wid] > 1.5:
-                shown[wid] = on
-            else:
-                ok = False
-        elif fails.get(wid, 0) >= 5:
-            shown[wid] = on   # no socket (started before listen_on was set): leave it alone
-        else:
-            fails[wid] = fails.get(wid, 0) + 1
-            ok = False
-    return ok
-
-
 def focused_id(node):
     if node.get("focused"):
         return node["id"]
@@ -117,13 +78,9 @@ def focused_id(node):
 def refresh():
     tree = json.loads(i3("-t", "get_tree"))
     f = focused_id(tree)
-    ok = True
     for ws in workspaces(tree):
-        split = is_split(ws)
-        if split:
+        if is_split(ws):
             arrange(ws, f)
-        ok = watermark(ws, not split) and ok
-    return ok
 
 
 def toggle():
@@ -156,10 +113,7 @@ def daemon():
             except ValueError:
                 continue
             if ev.get("change") in ("new", "close", "move", "floating"):
-                for _ in range(10):   # a new kitty needs ~1.5 s (see watermark)
-                    if refresh():
-                        break
-                    time.sleep(0.3)
+                refresh()
         time.sleep(1)
 
 

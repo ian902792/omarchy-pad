@@ -46,7 +46,7 @@ def info():   # fastfetch-style block above the keys; read once per render
     return [
         ("OS", f"Termux on Android {prop('ro.build.version.release')} (ColorOS {prop('ro.build.version.oplusrom').lstrip('V')})"),
         ("Kernel", "Linux " + run("uname", "-r").split("-g")[0]),
-        ("WM", run("i3", "--version").split(" (")[0]),
+        ("WM", run("i3", "--version").split(" (")[0].replace(" version", "")),
         ("Terminal", " ".join(run("kitty", "--version").split()[:2])),
         ("Shell", "bash " + run("bash", "-c", "echo ${BASH_VERSION%%(*}")),
         ("Theme", "Tokyo Night · " + (icons.group(1).strip() if icons else "")),

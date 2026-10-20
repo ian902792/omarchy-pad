@@ -1,0 +1,6 @@
+#!/data/data/com.termux/files/usr/bin/sh
+# mosh to the Mac and attach the persistent herdr session.
+. ~/.config/omarchy-pad/env
+: "${MAC:?set MAC=user@host in ~/.config/omarchy-pad/env}"
+mosh --server=/opt/homebrew/bin/mosh-server "$MAC" -- /opt/homebrew/bin/herdr "$@" && exit 0
+printf '\nmosh to %s failed. Enter to close.' "$MAC"; read -r _

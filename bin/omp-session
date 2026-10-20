@@ -1,0 +1,5 @@
+#!/data/data/com.termux/files/usr/bin/sh
+# X session body, run by termux-x11 -xstartup (see start.sh).
+export PATH="$HOME/.local/bin:$PATH"
+xrdb -nocpp -merge "$HOME/.Xresources" || echo "omp-session: xrdb failed" >&2
+exec dbus-launch --exit-with-session i3

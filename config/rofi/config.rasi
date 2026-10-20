@@ -1,0 +1,21 @@
+configuration {
+    modi: "drun,window,run";
+    show-icons: true;
+    drun-display-format: "{name}";
+    font: "JetBrainsMono Nerd Font 12";
+    dpi: 240;   /* keep in sync with Xft.dpi; rofi ignores dpi: 1 here */
+}
+* {
+    bg: #1a1b26; bg-alt: #24283b; fg: #a9b1d6; accent: #7aa2f7; muted: #565f89;
+    background-color: @bg; text-color: @fg;
+}
+window { width: 36%; border: 2px solid; border-color: #7aa2f7; padding: 16px; }
+inputbar { children: [prompt, entry]; spacing: 12px; padding: 0 0 12px 0; }
+prompt { text-color: @accent; }
+entry { placeholder: "Search"; placeholder-color: @muted; }
+listview { lines: 8; spacing: 4px; fixed-height: false; }
+element { padding: 8px 10px; spacing: 10px; }
+element normal.normal, element alternate.normal { background-color: @bg; text-color: @fg; }
+element selected.normal { background-color: @bg-alt; text-color: @accent; }
+element-icon, element-text { background-color: inherit; text-color: inherit; }
+element-icon { size: 1.2em; }

@@ -1,4 +1,0 @@
-[Settings]
-gtk-application-prefer-dark-theme=1
-gtk-font-name=Sans 11
-gtk-cursor-theme-size=@CURSOR@

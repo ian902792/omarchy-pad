@@ -1,0 +1,7 @@
+#!/data/data/com.termux/files/usr/bin/sh
+# Claude Code's linux-arm64 glibc build, started through glibc's loader. Termux's LD_PRELOAD
+# (a bionic lib) can't load into a glibc process, so it's dropped here and restored for
+# Claude's Bash commands via CLAUDE_ENV_FILE. Self-update is off: re-run install.sh instead.
+export CLAUDE_ENV_FILE="$HOME/.local/share/claude-glibc/env.sh" DISABLE_AUTOUPDATER=1
+[ -f "$CLAUDE_ENV_FILE" ] || echo "export LD_PRELOAD=${LD_PRELOAD:-$PREFIX/lib/libtermux-exec-ld-preload.so}" > "$CLAUDE_ENV_FILE"
+exec env -u LD_PRELOAD "$PREFIX/glibc/lib/ld-linux-aarch64.so.1" "$HOME/.local/share/claude-glibc/claude" "$@"

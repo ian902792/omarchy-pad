@@ -21,15 +21,15 @@ KEYS = [
     ("Super+Escape", "離開桌面"),
 ]
 BG, KEY, DESC = "#1a1b26", "#454d70", "#363c58"   # faint on the Tokyo Night background
-SIZE = 40                                          # real px (Xft.dpi 240 => ~16 logical px)
-
+S = int(os.environ.get("OMP_SCALE", "75")) / 100   # start.sh exports it; X runs at S x native
+SIZE = round(40 * S)   # 40 px at native resolution (~16 logical px)
 mono = ImageFont.truetype(os.path.expandvars("$PREFIX/share/fonts/JetBrainsMonoNF/JetBrainsMonoNerdFont-Regular.ttf"), SIZE)
 cjk = ImageFont.truetype("/system/fonts/NotoSansCJK-Regular.ttc", SIZE, index=3)  # 0 JP, 1 KR, 2 SC, 3 TC
 line, gap = int(SIZE * 1.7), SIZE * 2
 kw = max(mono.getlength(k) for k, _ in KEYS)
 dw = max(cjk.getlength(d) for _, d in KEYS)
 # Full-screen canvas: kitty paints black outside the image, and "centered" crops it evenly in any window size.
-W, H = 3392, 2400   # OPPO Pad 4 Pro panel
+W, H = int(3392 * S), int(2400 * S)   # OPPO Pad 4 Pro panel at the X resolution
 img = Image.new("RGB", (W, H), BG)
 draw = ImageDraw.Draw(img)
 x0 = (W - (kw + gap + dw)) / 2

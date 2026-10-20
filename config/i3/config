@@ -25,8 +25,8 @@ client.background       #1a1b26
 # --- apps ---
 # Super+Return never reaches X11 from a physical keyboard (ColorOS takes Meta+Enter)
 bindsym $mod+t exec kitty
-bindsym $mod+space exec rofi -show drun
-bindsym $mod+Tab exec rofi -show window
+bindsym $mod+space exec rofi -show drun -dpi $OMP_DPI
+bindsym $mod+Tab exec rofi -show window -dpi $OMP_DPI
 # Super+M: focus the herdr tab if it's open, otherwise open it (one mosh session, not one per press)
 bindsym $mod+m exec sh -c 'i3-msg -q "[instance=omp-mac] focus" || kitty --name omp-mac --title Mac omp-mac'
 bindsym $mod+e exec thunar

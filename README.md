@@ -13,7 +13,7 @@ OPPO Pad 4 Pro（ColorOS / Android 16）上的鍵盤導向開發桌面：**Termu
 | 終端機 | kitty（zink：Adreno GPU） | 支援背景圖：快捷鍵浮水印（`bin/omp-watermark` 產生，改快捷鍵後重跑）。用 GPU 比軟體 GL（llvmpipe）省約 9 倍 CPU |
 | 啟動器 / 通知 | rofi / dunst | |
 | 字型 | JetBrainsMono Nerd Font | |
-| 縮放 | `Xft.dpi: 240`（2.5x，約 1357×960 邏輯解析度） | 315 ppi 面板用 2x 太小；GTK 用 `GDK_SCALE=2 GDK_DPI_SCALE=0.5` |
+| 解析度 / 縮放 | X 以原生的 `OMP_SCALE`%（預設 75% = 2544×1800）繪製，DPI 跟著換算 | 延遲跟像素數成正比：100% 最清晰、50% 最快；改 `~/.config/omarchy-pad/env` 後重開桌面 | 315 ppi 面板用 2x 太小；GTK 用 `GDK_SCALE=2 GDK_DPI_SCALE=0.5` |
 | 遠端 | mosh → Mac（Tailscale IP）→ `herdr` | |
 | Claude Code | linux-arm64 glibc 版，經 glibc-runner 的 loader 執行 | 沒有 Android 版；見 `bin/claude` |
 

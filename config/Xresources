@@ -1,5 +1,4 @@
-! 13.2" 3392x2400 ≈ 315 ppi -> 2.5x (≈1357x960 logical, MacBook-Air-sized text)
-Xft.dpi: 240
+! Xft.dpi is set by omp-session from OMP_SCALE (240 at native 3392x2400 = MacBook-Air-sized text)
 Xft.antialias: 1
 Xft.hinting: 1
 Xft.hintstyle: hintslight

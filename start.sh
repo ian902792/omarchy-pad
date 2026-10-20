@@ -1,6 +1,12 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # Start Termux:X11 + i3. Safe to re-run (restarts the session).
 "$(dirname "$0")/stop.sh"
+. ~/.config/omarchy-pad/env 2>/dev/null
+# X renders at OMP_SCALE % of the native 3392x2400 and Termux:X11 upscales it. Every frame kitty draws is
+# copied through the X server, so pixels = latency: per typed key the X server cost ~17ms at 100%,
+# ~10ms at 75%, ~6ms at 50%. Lower = snappier, softer text. DPI follows so sizes stay the same.
+OMP_SCALE="${OMP_SCALE:-75}"
+export OMP_DPI=$((240 * OMP_SCALE / 100)) OMP_SCALE
 export DISPLAY=:0 XDG_RUNTIME_DIR="$TMPDIR/runtime"
 mkdir -p -m 700 "$XDG_RUNTIME_DIR"
 # GPU GL via zink (Adreno 830 / Turnip). kitty renders cleanly on it and uses ~9x less CPU than llvmpipe
@@ -14,6 +20,12 @@ rm -f ~/.config/ibus/bus/*   # stale address from the last fcitx5 would point ki
 nohup termux-x11 :0 -ac -noreset -xstartup "$HOME/.local/bin/omp-session" \
     >"$TMPDIR/omarchy-pad.log" 2>&1 &
 am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity >/dev/null 2>&1
+# displayScale is the inverse (200 = half resolution); it only sticks while the X11 app is up, so retry
+( for i in 1 2 3 4 5 6 7 8 9 10; do
+      timeout 5 termux-x11-preference displayResolutionMode:scaled displayScale:$((10000 / OMP_SCALE)) >/dev/null 2>&1 && break
+      sleep 1
+  done ) &
+"$(dirname "$0")/bin/omp-watermark" >/dev/null 2>&1 &
 # Remote access while the desktop runs: sshd on 8022 (key-only), and a wake lock so Android keeps Termux alive.
 pgrep -x sshd >/dev/null || sshd
 termux-wake-lock

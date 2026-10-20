@@ -3,7 +3,6 @@ configuration {
     show-icons: true;
     drun-display-format: "{name}";
     font: "JetBrainsMono Nerd Font 12";
-    dpi: 240;   /* keep in sync with Xft.dpi; rofi ignores dpi: 1 here */
 }
 * {
     bg: #1a1b26; bg-alt: #24283b; fg: #a9b1d6; accent: #7aa2f7; muted: #565f89;

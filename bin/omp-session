@@ -2,4 +2,5 @@
 # X session body, run by termux-x11 -xstartup (see start.sh).
 export PATH="$HOME/.local/bin:$PATH"
 xrdb -nocpp -merge "$HOME/.Xresources" || echo "omp-session: xrdb failed" >&2
+echo "Xft.dpi: ${OMP_DPI:-180}" | xrdb -nocpp -merge   # set by start.sh from OMP_SCALE
 exec dbus-launch --exit-with-session i3

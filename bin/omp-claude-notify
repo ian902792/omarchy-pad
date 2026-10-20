@@ -22,7 +22,7 @@ if ev.get("hook_event_name") == "Stop":
         pass
     msg, say = "完成了，等你回覆", "Claude is done"
 else:
-    msg, say = ev.get("message") or "需要你的回應", "Claude 需要你確認"
+    msg, say = ev.get("message") or "需要你的回應", "Claude needs you"
 title = f"Claude · {os.path.basename(ev.get('cwd', '')) or '~'}"
 
 # one notification per session, replaced instead of piling up
@@ -31,4 +31,4 @@ subprocess.run(["termux-notification", "--channel", "omp-claude", "--id", f"clau
 if os.environ.get("DBUS_SESSION_BUS_ADDRESS"):
     subprocess.run(["notify-send", "-a", "Claude", "-t", "8000", title, msg], timeout=5)
 if os.environ.get("OMP_NOTIFY_VOICE", "1") != "0":
-    subprocess.run(["termux-tts-speak", "-l", "zh", "-r", "1.1", say], timeout=20)
+    subprocess.run(["termux-tts-speak", "-l", "en", say], timeout=20)

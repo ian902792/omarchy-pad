@@ -132,4 +132,4 @@ elif sys.argv[1:] in ([ENTRY], [CALENDAR], [SHUTDOWN]):   # picked in the launch
     cmd = {ENTRY: [me, "list"], CALENDAR: [os.path.join(os.path.dirname(me), "omp-cal")], SHUTDOWN: [me, "shutdown"]}
     subprocess.Popen(cmd[sys.argv[1]], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 else:
-    print(f"{ENTRY}\0icon\x1finput-keyboard\n{CALENDAR}\0icon\x1fpreferences-system-time\n{SHUTDOWN}\0icon\x1fsystem-shutdown")
+    print(f"{ENTRY}\0icon\x1finput-keyboard\n{CALENDAR}\0icon\x1foffice-calendar\n{SHUTDOWN}\0icon\x1fsystem-shutdown")

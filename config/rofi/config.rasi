@@ -8,7 +8,7 @@ configuration {
     bg: #1a1b26; bg-alt: #24283b; fg: #a9b1d6; accent: #7aa2f7; muted: #565f89;
     background-color: @bg; text-color: @fg;
 }
-window { width: 36%; border: 2px solid; border-color: #7aa2f7; padding: 16px; }
+window { width: 36%; border: 2px solid; border-color: #7aa2f7; padding: 10px; background-color: @bg; }
 inputbar { children: [prompt, entry]; spacing: 12px; padding: 10px 12px; margin: 0 0 12px 0; background-color: @bg-alt; }
 prompt, entry { background-color: inherit; vertical-align: 0.5; }
 prompt { text-color: @accent; }

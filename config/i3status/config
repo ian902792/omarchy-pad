@@ -1,5 +1,7 @@
 # Android lets Termux read only /proc/meminfo and thermal_zone0; battery/network/cpu are denied.
+# Battery comes from Termux:API, added by bin/omp-status (which runs this).
 general {
+    output_format = "i3bar"
     colors = true
     color_good = "#9ece6a"
     color_degraded = "#e0af68"

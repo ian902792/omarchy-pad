@@ -1,0 +1,38 @@
+#!/data/data/com.termux/files/usr/bin/python
+# i3bar status: i3status plus a battery block (Android only shows the battery to Termux:API,
+# so i3status can't read it). Battery is refreshed every 60 s (termux-battery-status takes ~0.5 s).
+import json, subprocess, sys, time
+
+ICONS = "󰂎󰁺󰁻󰁼󰁽󰁾󰁿󰂀󰂁󰂂󰁹"   # 0,10,...,100 %
+cache, last = None, 0
+
+def battery():
+    global cache, last
+    if time.time() - last > 60:
+        last = time.time()
+        try:
+            b = json.loads(subprocess.run(["termux-battery-status"], capture_output=True, text=True, timeout=10).stdout)
+            pct, plugged = b["percentage"], b["plugged"] != "UNPLUGGED"
+            block = {"name": "battery", "full_text": f"{'󰂄' if plugged else ICONS[round(pct / 10)]} {pct}%"}
+            if not plugged and pct <= 20:
+                block["color"] = "#f7768e"
+            elif not plugged and pct <= 30:
+                block["color"] = "#e0af68"
+            cache = block
+        except (OSError, ValueError, KeyError, subprocess.TimeoutExpired):
+            pass   # Termux:API app missing or slow: keep the last value
+    return cache
+
+i3s = subprocess.Popen(["i3status"], stdout=subprocess.PIPE, text=True)
+for line in i3s.stdout:
+    # protocol: header line, "[", then one JSON array per update prefixed with "," after the first
+    prefix = "," if line.startswith(",") else ""
+    try:
+        blocks = json.loads(line[len(prefix):])
+    except ValueError:
+        print(line, end="", flush=True)   # header and the opening "["
+        continue
+    b = battery()
+    if b:
+        blocks.insert(len(blocks) - 1, b)   # just left of the clock
+    print(prefix + json.dumps(blocks, ensure_ascii=False), flush=True)

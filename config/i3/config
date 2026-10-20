@@ -94,7 +94,7 @@ bindsym $mod+Escape exec i3-nagbar -t warning -m 'Exit desktop?' -B 'Exit' 'i3-m
 
 bar {
     position top
-    status_command i3status
+    status_command omp-status
     tray_output none
     # clear the rounded top corners
     padding 0 20px

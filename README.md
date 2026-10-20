@@ -15,6 +15,7 @@ OPPO Pad 4 Pro（ColorOS / Android 16）上的鍵盤導向開發桌面：**Termu
 | 字型 | JetBrainsMono Nerd Font | |
 | 解析度 / 縮放 | X 以原生的 `OMP_SCALE`%（預設 75% = 2544×1800）繪製，DPI 跟著換算 | 延遲跟像素數成正比：100% 最清晰、50% 最快；改 `~/.config/omarchy-pad/env` 後重開桌面。GTK 用 `GDK_SCALE=2 GDK_DPI_SCALE=0.5` |
 | 遠端 | mosh → Mac（Tailscale IP）→ `herdr` | |
+| 桌布 | Omarchy Tokyo Night 的 `4-sunset-lake`（install.sh 下載到 `~/.local/share/omarchy-pad/wallpaper.jpg`，feh 設定） | 換桌布：覆蓋那個檔案後按 Super+Shift+R |
 | 狀態列 | i3status + `bin/omp-status`（電池，來自 Termux:API） | 沒接電源、電量低於 25% 時電池顯示紅色 |
 | Claude Code | linux-arm64 glibc 版，經 glibc-runner 的 loader 執行 | 沒有 Android 版；見 `bin/claude` |
 

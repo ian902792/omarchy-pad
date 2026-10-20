@@ -117,6 +117,7 @@ exec --no-startup-id sh -c 'xfconf-query -c thunar -p /last-separator-position -
 # rebuild the cheat sheet from the #: lines on every start and Super+Shift+R (i3 restart; plain reload skips it)
 exec_always --no-startup-id omp-watermark
 exec --no-startup-id omp-ime
-exec --no-startup-id xsetroot -solid '#1a1b26'
+# wallpaper (install.sh downloads it); plain Tokyo Night background if it's missing
+exec_always --no-startup-id sh -c 'feh --no-fehbg --bg-fill ~/.local/share/omarchy-pad/wallpaper.jpg || xsetroot -solid "#1a1b26"'
 # first terminal waits (max 3s) for fcitx5's IBus address file, else kitty starts without the input method
 exec sh -c 'for i in 1 2 3 4 5 6 7 8 9 10; do ls ~/.config/ibus/bus/*-unix-0 >/dev/null 2>&1 && break; sleep 0.3; done; exec kitty'

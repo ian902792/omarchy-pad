@@ -11,7 +11,7 @@ apt-get update
 apt-get install -y -o Dpkg::Options::=--force-confold x11-repo glibc-repo
 apt-get update
 apt-get install -y -o Dpkg::Options::=--force-confold \
-    termux-x11-nightly i3 i3status rofi dunst kitty python-pillow fcitx5 fcitx5-chinese-addons fcitx5-gtk3 libime xorg-xrdb xorg-xsetroot xorg-xkbcomp dbus thunar ristretto xclip papirus-icon-theme clang \
+    termux-x11-nightly i3 i3status rofi dunst kitty python-pillow fcitx5 fcitx5-chinese-addons fcitx5-gtk3 libime xorg-xrdb xorg-xsetroot xorg-xkbcomp dbus thunar ristretto xclip papirus-icon-theme clang feh \
     openssh mosh git gh starship nodejs-lts neovim fzf ripgrep jq termux-api lazygit fd bat eza zoxide git-delta uv glibc-runner
 
 echo "==> font (JetBrainsMono Nerd Font)"
@@ -59,6 +59,15 @@ for n in start stop; do
     chmod +x "$f"
     cp "$f" "$dyn/"
 done
+
+echo "==> wallpaper (Omarchy Tokyo Night: 4-sunset-lake, downloaded, not kept in the repo)"
+wp=~/.local/share/omarchy-pad/wallpaper.jpg
+if [ ! -f "$wp" ]; then
+    mkdir -p "$(dirname "$wp")"
+    curl -fsSL https://raw.githubusercontent.com/basecamp/omarchy/master/themes/tokyo-night/backgrounds/4-sunset-lake.webp -o "$wp.webp" &&
+        python -c "from PIL import Image; im = Image.open('$wp.webp').convert('RGB'); im.thumbnail((4800, 2400)); im.save('$wp', quality=92)"
+    rm -f "$wp.webp"
+fi
 
 echo "==> Chinese input: fcitx5 + 自由大新倉頡 (ime/newcj.cin -> fcitx5 table)"
 fx=~/.local/share/fcitx5

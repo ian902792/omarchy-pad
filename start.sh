@@ -4,8 +4,8 @@
 # X server down with it (nohup only covers SIGHUP). setsid gives everything below its own session.
 [ -n "$OMP_DETACHED" ] || OMP_DETACHED=1 exec setsid "$0" "$@"
 termux-wake-lock   # first: keeps TermuxService (and this script) alive when launched from Termux:Widget
-# Bring Termux:X11 up front now, while the widget tap still counts as a user action; ColorOS blocks
-# background activity starts a few seconds later.
+# Bring Termux:X11 up front. Works from the Termux app or ssh; from Termux:Widget ColorOS blocks it
+# (BAL_BLOCK in logcat), so after Desktop Start the user taps the Termux:X11 icon.
 am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity >/dev/null 2>&1
 "$(dirname "$0")/stop.sh" --restart
 . ~/.config/omarchy-pad/env 2>/dev/null
@@ -26,7 +26,6 @@ export GLFW_IM_MODULE=ibus GTK_IM_MODULE=fcitx QT_IM_MODULE=fcitx XMODIFIERS=@im
 rm -f ~/.config/ibus/bus/*   # stale address from the last fcitx5 would point kitty at a dead socket
 nohup termux-x11 :0 -ac -noreset -xstartup "$HOME/.local/bin/omp-session" \
     >"$TMPDIR/omarchy-pad.log" 2>&1 &
-am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity >/dev/null 2>&1
 # displayScale is the inverse (200 = half resolution); it only sticks while the X11 app is up, so retry
 ( for i in 1 2 3 4 5 6 7 8 9 10; do
       timeout 5 termux-x11-preference displayResolutionMode:scaled displayScale:$((10000 / OMP_SCALE)) >/dev/null 2>&1 && break

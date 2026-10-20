@@ -34,6 +34,8 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
 - termux-x11 needs `-noreset`, otherwise xrdb resources (Xft.dpi 240) vanish.
 - Physical keyboard: Super works, but **Super+Return is taken by ColorOS**; Super+T opens a terminal.
 - i3 config has no trailing comments on `bindsym` lines (they become part of the command).
+- Termux:Widget start: `start.sh` takes the wake lock first and `stop.sh --restart` keeps it; dropping it lets
+  TermuxService stop and kill the new desktop. The X11 activity can't be raised from a widget (BAL_BLOCK).
 - Termux in background cannot open Android activities (`termux-open-url` fails) — ColorOS policy.
 - Android only exposes `/proc/meminfo` and `thermal_zone0`; no battery/CPU/network stats.
 - Claude Code: linux-arm64 glibc build run via `bin/claude` (glibc ld.so, LD_PRELOAD dropped, restored for Bash via CLAUDE_ENV_FILE). No self-update; update with `install.sh`.

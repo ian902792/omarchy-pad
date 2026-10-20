@@ -32,7 +32,7 @@ Mac 端需要：系統設定開「遠端登入」、`brew install mosh`、第一
 
 ## 啟動 / 停止
 
-- **長按 Termux:Widget 的 app 圖示** → **Desktop Start** / **Desktop Stop**（install 之後要開 Termux:Widget 按一次 CREATE SHORTCUTS 才會更新清單）
+- **長按 Termux:Widget 的 app 圖示** → **Desktop Start**，約 3 秒後**點 Termux:X11 圖示**進入桌面（ColorOS 不准 Widget 自動把它叫到前景）；**Desktop Stop** 關閉。install 之後要開 Termux:Widget 按一次 CREATE SHORTCUTS 才會更新清單
 - 或桌面上的 Termux:Widget 小工具（`~/.shortcuts/tasks/`，背景執行）
 - 或在 Termux 裡 `bash ~/omarchy-pad/start.sh`（會先停掉舊的 session）/ `stop.sh`
 - 桌面已在跑、只是切走了：直接點 **Termux:X11** app（或從多工切回去）即可，不用重新 Start

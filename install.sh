@@ -11,7 +11,7 @@ apt-get update
 apt-get install -y -o Dpkg::Options::=--force-confold x11-repo glibc-repo
 apt-get update
 apt-get install -y -o Dpkg::Options::=--force-confold \
-    termux-x11-nightly i3 i3status rofi dunst kitty python-pillow xorg-xrdb xorg-xsetroot dbus thunar \
+    termux-x11-nightly i3 i3status rofi dunst kitty python-pillow xorg-xrdb xorg-xsetroot xorg-xkbcomp dbus thunar \
     openssh mosh git gh starship nodejs-lts neovim fzf ripgrep jq termux-api glibc-runner
 
 echo "==> font (JetBrainsMono Nerd Font)"
@@ -24,7 +24,7 @@ fi
 
 echo "==> configs (symlinked to $ROOT/config; old dirs kept as *.bak)"
 mkdir -p ~/.config ~/.local/bin ~/.shortcuts
-for d in i3 i3status kitty rofi dunst; do
+for d in i3 i3status kitty rofi dunst gtk-3.0; do
     t=~/.config/$d
     [ -L "$t" ] && rm "$t"
     [ -e "$t" ] && mv "$t" "$t.bak.$(date +%s)"

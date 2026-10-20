@@ -20,6 +20,7 @@ Synced via GitHub (`git@github.com:ian902792/omarchy-pad.git`, private). Copies:
 | `config/gitconfig` | included from `~/.gitconfig` (delta pager) | immediate |
 | `config/lazygit/config.yml` | `~/.config/lazygit/config.yml` | next `lg` |
 | `bin/omp-status` (battery block, red < 25%) | i3bar `status_command` | `i3-msg restart` |
+| `bin/omp-tile` (side-by-side layouts, watermark on/off; Super+S = `omp-tile toggle`) | daemon from i3 `exec_always` | `i3-msg restart`; `omp-tile test` = self-check |
 | `bin/*` | `~/.local/bin/*` | immediate |
 | `config/kitty/watermark.png` | generated, gitignored | `omp-watermark` (entries are the `#:` lines in `config/i3/config`) |
 
@@ -45,6 +46,9 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
   Fix: `./android-setup.sh` on the Mac (pad on USB).
   Termux itself can't read or write secure settings.
 - i3 config has no trailing comments on `bindsym` lines (they become part of the command).
+- Watermark: kitty.conf has `background_image none`; `omp-tile` sets it per kitty over `listen_on unix:$TMPDIR/kitty-PID`
+  (Android kitten has no abstract sockets). A configured image is loaded late and would override hiding it.
+  kittys started before that config change have no socket and keep their old image.
 - Termux:Widget start: `start.sh` takes the wake lock first and `stop.sh --restart` keeps it; dropping it lets
   TermuxService stop and kill the new desktop. The X11 activity can't be raised from a widget (BAL_BLOCK).
 - Android's phantom process killer (max 32 child processes for all apps) killed the whole desktop incl. sshd

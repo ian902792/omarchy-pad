@@ -29,6 +29,8 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
 - Hyprland/Wayland impossible (Termux:X11 is an X server). i3 only.
 - GL: zink (Turnip, Adreno 830) set in `start.sh`. kitty is clean on it and ~9x cheaper than llvmpipe;
   alacritty rendered garbage on zink (reason it was replaced). llvmpipe fallback: `LIBGL_ALWAYS_SOFTWARE=1`.
+  Keep `MESA_VK_WSI_PRESENT_MODE=mailbox`: with the default fifo the screen briefly showed older frames
+  (text/preedit jumping back). Check after Mesa/kitty upgrades with `tests/frame-order.py` (expect backwards=0).
 - Latency = pixels: kitty frames go through the X server. `OMP_SCALE` (env file, default 75) sets the X resolution
   as % of native via Termux:X11 `displayScale` (inverse: 133 = 75%), and DPI = 240*scale; restart the desktop after changing.
 - termux-x11 needs `-noreset`, otherwise xrdb resources (Xft.dpi 240) vanish.

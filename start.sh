@@ -20,6 +20,9 @@ mkdir -p -m 700 "$XDG_RUNTIME_DIR"
 # (300k-line test: 0.49s vs 4.25s). alacritty drew garbage on zink, which is why it was dropped.
 # Fallback if kitty ever fails to start: replace this line with  export LIBGL_ALWAYS_SOFTWARE=1
 export MESA_LOADER_DRIVER_OVERRIDE=zink GALLIUM_DRIVER=zink TU_DEBUG=noconform
+# The default (fifo) X11 swapchain sometimes shows an older frame: typed text and IME preedit jumped back for a moment.
+# mailbox had 0 backward frames in tests/frame-order.py (fifo: ~10 per 220 keys).
+export MESA_VK_WSI_PRESENT_MODE=mailbox
 export GDK_SCALE=2 GDK_DPI_SCALE=0.5   # GTK: 2x widgets; text already scaled by Xft.dpi, undo the 2x
 # fcitx5 (自由大新): kitty only speaks IBus, which fcitx5 emulates; GTK uses its own module, others XIM
 export GLFW_IM_MODULE=ibus GTK_IM_MODULE=fcitx QT_IM_MODULE=fcitx XMODIFIERS=@im=fcitx

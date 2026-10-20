@@ -47,6 +47,9 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
 - Android's phantom process killer (max 32 child processes for all apps) killed the whole desktop incl. sshd
   ("Trimming phantom processes" in logcat; every kitty window adds ~3 processes). Disabled by `./android-setup.sh`;
   re-run it after a ColorOS update.
+- Android tags heap pointers (0xb400...), which overflow i3's con_id: i3bar workspace clicks failed with
+  "Could not parse con id". `lib/omp-notag.c` (built by install.sh, preloaded by `omp-session`) turns tagging off.
+  The `NATIVE_HEAP_POINTER_TAGGING` compat flag does not help: it only covers the app process, not what Termux execs.
 - Termux in background cannot open Android activities (`termux-open-url` fails) — ColorOS policy.
 - Android only exposes `/proc/meminfo` and `thermal_zone0`; no battery/CPU/network stats.
 - Claude Code: linux-arm64 glibc build run via `bin/claude` (glibc ld.so, LD_PRELOAD dropped, restored for the Bash tool by a CLAUDE_CODE_SHELL wrapper so bash itself loads termux-exec and `#!/usr/bin/env` scripts run). No self-update; update with `install.sh`.

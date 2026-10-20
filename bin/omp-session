@@ -3,4 +3,7 @@
 export PATH="$HOME/.local/bin:$PATH"
 xrdb -nocpp -merge "$HOME/.Xresources" || echo "omp-session: xrdb failed" >&2
 echo "Xft.dpi: ${OMP_DPI:-180}" | xrdb -nocpp -merge   # set by start.sh from OMP_SCALE
+# Untagged heap pointers for i3 (see lib/omp-notag.c): otherwise clicks on the bar's workspace buttons fail
+notag="$HOME/.local/lib/omp-notag.so"
+[ -f "$notag" ] && export LD_PRELOAD="${LD_PRELOAD:+$LD_PRELOAD:}$notag"
 exec dbus-launch --exit-with-session i3

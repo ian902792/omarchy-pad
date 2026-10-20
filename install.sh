@@ -11,7 +11,7 @@ apt-get update
 apt-get install -y -o Dpkg::Options::=--force-confold x11-repo glibc-repo
 apt-get update
 apt-get install -y -o Dpkg::Options::=--force-confold \
-    termux-x11-nightly i3 i3status rofi dunst kitty python-pillow fcitx5 fcitx5-chinese-addons fcitx5-gtk3 libime xorg-xrdb xorg-xsetroot xorg-xkbcomp dbus thunar ristretto xclip papirus-icon-theme \
+    termux-x11-nightly i3 i3status rofi dunst kitty python-pillow fcitx5 fcitx5-chinese-addons fcitx5-gtk3 libime xorg-xrdb xorg-xsetroot xorg-xkbcomp dbus thunar ristretto xclip papirus-icon-theme clang \
     openssh mosh git gh starship nodejs-lts neovim fzf ripgrep jq termux-api glibc-runner
 
 echo "==> font (JetBrainsMono Nerd Font)"
@@ -35,6 +35,7 @@ ln -sf "$ROOT/config/Xresources" ~/.Xresources
 xdg-mime default org.xfce.ristretto.desktop image/jpeg image/png image/gif image/webp image/heic
 for f in "$ROOT"/bin/*; do ln -sf "$f" ~/.local/bin/; done
 "$ROOT/bin/omp-watermark" >/dev/null   # key cheat sheet behind kitty text
+mkdir -p ~/.local/lib && clang -shared -fPIC -O2 -o ~/.local/lib/omp-notag.so "$ROOT/lib/omp-notag.c"
 ln -sf "$ROOT/config/starship.toml" ~/.config/starship.toml
 # ~/.bashrc stays yours: drop the old one-line PATH hook, then source config/bashrc once
 sed -i '/# omarchy-pad$/d' ~/.bashrc 2>/dev/null || true

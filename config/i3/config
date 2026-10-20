@@ -90,8 +90,8 @@ bindsym $mod+Shift+6 move container to workspace number 6
 
 # --- session ---
 bindsym $mod+Shift+r restart
-#: 離開桌面
-bindsym $mod+Escape exec i3-nagbar -t warning -m 'Exit desktop?' -B 'Exit' 'i3-msg exit'
+#: 關閉桌面（同 stop.sh，會先確認）
+bindsym $mod+Escape exec omp-keys shutdown
 
 bar {
     position top

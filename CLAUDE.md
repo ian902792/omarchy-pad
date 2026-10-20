@@ -25,7 +25,7 @@ Synced via GitHub (`git@github.com:ian902792/omarchy-pad.git`, private). Copies:
 | `bin/omp-keys` (key cheat sheet + system info: first entry of Super+Space, rofi combi; rows = `#:` lines in `config/i3/config`, Enter runs the binding) | rofi script mode | immediate |
 | `bin/*` | `~/.local/bin/*` | immediate |
 
-Session: `start.sh` (restarts X11 + i3, starts sshd, wake lock) / `stop.sh`. `install.sh` is idempotent (packages, links, Claude Code).
+Session: `start.sh` (restarts X11 + i3, starts sshd, wake lock) / `stop.sh` (also Super+Escape and the launcher's Shut Down Desktop, via `omp-keys shutdown`). `install.sh` is idempotent (packages, links, Claude Code).
 Termux:Widget entries: `~/.shortcuts/tasks/` and `~/.termux/widget/dynamic_shortcuts/` (written by install.sh).
 Logs: `$TMPDIR/omarchy-pad.log` (X server + session stderr).
 

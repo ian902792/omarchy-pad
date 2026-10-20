@@ -63,7 +63,7 @@ GitHub private repo `ian902792/omarchy-pad`。平板與 Mac 都是 clone，改�
 | Super+方向鍵（+Shift） | 移動焦點（移動視窗） |
 | Super+-/=（+Shift） | 調整寬度（高度） |
 | Super+1…6（+Shift） | 切換桌面（把視窗移過去） |
-| Super+Shift+R / Super+Escape | 重新載入 i3 / 離開 |
+| Super+Shift+R / Super+Escape | 重新載入 i3 / 關閉桌面（同 `stop.sh`，會先確認；Super+Space 的 Shut Down Desktop 也一樣） |
 
 **Super 鍵需要實體鍵盤驗證**：已啟用 Termux:X11 的 KeyInterceptor 無障礙服務與 `dexMetaKeyCapture`，
 但 adb 注入的 Super 會被 ColorOS 拿走，所以只確認了 X 端（xdotool）快捷鍵可用。

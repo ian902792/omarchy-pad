@@ -3,13 +3,14 @@
 #   omp-keys launcher  Super+Space: rofi combi with the "Key Cheat Sheet" entry above the apps (drun). Started from here
 #                      because i3 splits commands at "," (as in -combi-modi keys,drun).
 #   omp-keys list      the cheat sheet under a system info block; Enter runs the selected binding through i3-msg
-#   omp-keys           rofi script mode: prints the entry, or opens the list when it's picked
+#   omp-keys shutdown  Super+Escape: confirm, then stop.sh (closes X11, i3 and every window; releases the wake lock)
+#   omp-keys           rofi script mode: prints the entries, or opens the picked one once the launcher has closed
 import html, os, re, subprocess, sys, time, unicodedata
 
 ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
 NAMES = {"$mod": "Super", "space": "Space", "Escape": "Escape", "Return": "Return",
          "Left": "←", "Right": "→", "Up": "↑", "Down": "↓", "minus": "-", "equal": "="}
-ENTRY = "Key Cheat Sheet"
+ENTRY, SHUTDOWN = "Key Cheat Sheet", "Shut Down Desktop"
 LABEL, VALUE, KEY = "#bb9af7", "#c0caf5", "#7dcfff"   # Tokyo Night purple / white / cyan
 
 
@@ -86,31 +87,47 @@ def mesg():
                      + " " * (vw - width(v)) for k, v in rows)
 
 
+def rofi(rows, *args):
+    """Index of the picked row, or None"""
+    for _ in range(10):   # the launcher's rofi may still hold the keyboard grab for a moment
+        r = subprocess.run(["rofi", "-dmenu", "-i", "-format", "i", "-no-custom", "-markup-rows", "-dpi", dpi(), *args],
+                           input="\n".join(rows), capture_output=True, text=True)
+        if "grab" not in r.stderr.lower():
+            break
+        time.sleep(0.1)
+    return int(r.stdout) if r.returncode == 0 and r.stdout.strip() else None
+
+
 def show():
     rows = keys(os.path.join(ROOT, "config", "i3", "config"))
     w = max(len(k) for k, _, _ in rows)
     lines = [f"{k.rjust(w)}   {d}" for k, d, _ in rows]
-    menu = "\n".join(f'<span color="{KEY}">{html.escape(k.rjust(w))}</span>   {html.escape(d)}' for k, d, _ in rows)
+    menu = [f'<span color="{KEY}">{html.escape(k.rjust(w))}</span>   {html.escape(d)}' for k, d, _ in rows]
     msg = mesg()
     cols = max(width(l) for l in lines + re.sub("<[^>]+>", "", msg).split("\n")) + 4   # + element padding
-    for _ in range(10):   # the launcher's rofi may still hold the keyboard grab for a moment
-        r = subprocess.run(["rofi", "-dmenu", "-i", "-p", "Keys", "-format", "i", "-no-custom", "-markup-rows", "-mesg", msg,
-                            "-dpi", dpi(), "-theme-str", f"window {{ width: {cols}ch; }} textbox {{ horizontal-align: 0.5; }}"],
-                           input=menu, capture_output=True, text=True)
-        if "grab" not in r.stderr.lower():
-            break
-        time.sleep(0.1)
-    if r.returncode == 0 and r.stdout.strip():
-        cmd = rows[int(r.stdout)][2]
-        if cmd:
-            subprocess.run(["i3-msg", "-q", cmd])
+    i = rofi(menu, "-p", "Keys", "-mesg", msg,
+             "-theme-str", f"window {{ width: {cols}ch; }} textbox {{ horizontal-align: 0.5; }}")
+    if i is not None and rows[i][2]:
+        subprocess.run(["i3-msg", "-q", rows[i][2]])
+
+
+def shutdown():
+    if rofi(["Cancel", '<span color="#f7768e">Shut Down</span>'], "-p", "Shut down desktop?",
+            "-mesg", "Closes every window and Termux:X11, and releases the wake lock.",
+            "-theme-str", "window { width: 66ch; } listview { lines: 2; }") == 1:
+        # own session: stop.sh kills the X server this process runs under
+        subprocess.Popen([os.path.join(ROOT, "stop.sh")], start_new_session=True,
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 if sys.argv[1:] == ["launcher"]:
     launcher()
 elif sys.argv[1:] == ["list"]:
     show()
-elif sys.argv[1:] == [ENTRY]:   # picked in the launcher: open the list once rofi has closed
-    subprocess.Popen([os.path.realpath(__file__), "list"], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+elif sys.argv[1:] == ["shutdown"]:
+    shutdown()
+elif sys.argv[1:] in ([ENTRY], [SHUTDOWN]):   # picked in the launcher: open it once rofi has closed
+    subprocess.Popen([os.path.realpath(__file__), "list" if sys.argv[1] == ENTRY else "shutdown"],
+                     start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 else:
-    print(f"{ENTRY}\0icon\x1finput-keyboard")
+    print(f"{ENTRY}\0icon\x1finput-keyboard\n{SHUTDOWN}\0icon\x1fsystem-shutdown")

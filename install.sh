@@ -14,6 +14,9 @@ apt-get install -y -o Dpkg::Options::=--force-confold \
     termux-x11-nightly i3 i3status rofi dunst kitty python-pillow fcitx5 fcitx5-chinese-addons fcitx5-gtk3 libime xorg-xrdb xorg-xsetroot xorg-xkbcomp dbus thunar ristretto xclip papirus-icon-theme clang feh \
     openssh mosh git gh starship nodejs-lts neovim fzf ripgrep jq termux-api lazygit fd bat eza zoxide git-delta uv glibc-runner
 
+# bin/omp-cal: NYSE closures
+pip install -q --upgrade holidays
+
 echo "==> font (JetBrainsMono Nerd Font)"
 fdir="$PREFIX/share/fonts/JetBrainsMonoNF"
 if [ ! -d "$fdir" ]; then

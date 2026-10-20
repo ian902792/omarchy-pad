@@ -54,7 +54,7 @@ GitHub private repo `ian902792/omarchy-pad`。平板與 Mac 都是 clone，改�
 | 鍵 | 動作 |
 |---|---|
 | Super+T | 新終端機分頁（Super+Return 實體鍵盤會被 ColorOS 攔走） |
-| Super+Space / Super+Tab | 應用程式啟動器（第一項 Key Cheat Sheet 是快捷鍵表，加上系統資訊；可搜尋、Enter 直接執行；由 `config/i3/config` 的 `#:` 註解產生）/ 視窗切換 |
+| Super+Space / Super+Tab | 應用程式啟動器（第一項 Key Cheat Sheet 是快捷鍵表，加上系統資訊；可搜尋、Enter 直接執行；由 `config/i3/config` 的 `#:` 註解產生。**Calendar** 是月曆：紅色台灣國定假日、底線美股休市／提早收盤，←/→ 換月）/ 視窗切換 |
 | **Super+M** | 切到 herdr 分頁；還沒開就 mosh 到 Mac 開一個（只會有一條連線） |
 | Super+E | Thunar（側邊欄有 下載 / 圖片 / 截圖 / 相機；照片用 ristretto 開） |
 | Super+Shift+S | 截圖，存到 Android 的 圖片/Screenshots |

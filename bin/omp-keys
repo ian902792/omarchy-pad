@@ -3,6 +3,7 @@
 #   omp-keys launcher  Super+Space: rofi combi with the "Key Cheat Sheet" entry above the apps (drun). Started from here
 #                      because i3 splits commands at "," (as in -combi-modi keys,drun).
 #   omp-keys list      the cheat sheet under a system info block; Enter runs the selected binding through i3-msg
+#   (launcher entry "Calendar" opens bin/omp-cal: month, Taiwan holidays, NYSE closures)
 #   omp-keys shutdown  Super+Escape: confirm, then stop.sh (closes X11, i3 and every window; releases the wake lock)
 #   omp-keys           rofi script mode: prints the entries, or opens the picked one once the launcher has closed
 import html, os, re, subprocess, sys, time, unicodedata
@@ -10,7 +11,7 @@ import html, os, re, subprocess, sys, time, unicodedata
 ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
 NAMES = {"$mod": "Super", "space": "Space", "Escape": "Escape", "Return": "Return",
          "Left": "←", "Right": "→", "Up": "↑", "Down": "↓", "minus": "-", "equal": "="}
-ENTRY, SHUTDOWN = "Key Cheat Sheet", "Shut Down Desktop"
+ENTRY, CALENDAR, SHUTDOWN = "Key Cheat Sheet", "Calendar", "Shut Down Desktop"
 LABEL, VALUE, KEY = "#bb9af7", "#c0caf5", "#7dcfff"   # Tokyo Night purple / white / cyan
 
 
@@ -126,8 +127,9 @@ elif sys.argv[1:] == ["list"]:
     show()
 elif sys.argv[1:] == ["shutdown"]:
     shutdown()
-elif sys.argv[1:] in ([ENTRY], [SHUTDOWN]):   # picked in the launcher: open it once rofi has closed
-    subprocess.Popen([os.path.realpath(__file__), "list" if sys.argv[1] == ENTRY else "shutdown"],
-                     start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+elif sys.argv[1:] in ([ENTRY], [CALENDAR], [SHUTDOWN]):   # picked in the launcher: open it once rofi has closed
+    me = os.path.realpath(__file__)
+    cmd = {ENTRY: [me, "list"], CALENDAR: [os.path.join(os.path.dirname(me), "omp-cal")], SHUTDOWN: [me, "shutdown"]}
+    subprocess.Popen(cmd[sys.argv[1]], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 else:
-    print(f"{ENTRY}\0icon\x1finput-keyboard\n{SHUTDOWN}\0icon\x1fsystem-shutdown")
+    print(f"{ENTRY}\0icon\x1finput-keyboard\n{CALENDAR}\0icon\x1fpreferences-system-time\n{SHUTDOWN}\0icon\x1fsystem-shutdown")

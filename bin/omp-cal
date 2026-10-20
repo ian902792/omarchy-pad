@@ -1,0 +1,116 @@
+#!/data/data/com.termux/files/usr/bin/python
+# Calendar in rofi (Super+Space → Calendar): a month with Taiwan public holidays and NYSE closures.
+#   omp-cal [YYYY-MM]   ← / → change month, Esc closes
+# Taiwan: 人事行政總處 calendar via github.com/ruyut/TaiwanCalendar, cached per year in ~/.cache/omarchy-pad.
+# NYSE: full closures from the `holidays` package (install.sh pip-installs it); 13:00 ET early closes by rule.
+import calendar, datetime as dt, html, json, os, subprocess, sys, urllib.request
+
+CACHE = os.path.expanduser("~/.cache/omarchy-pad")
+TW_URL = "https://cdn.jsdelivr.net/gh/ruyut/TaiwanCalendar/data/{}.json"
+RED, YELLOW, CYAN, MUTED, FG, ACCENT = "#f7768e", "#e0af68", "#7dcfff", "#565f89", "#c0caf5", "#7aa2f7"
+WEEK = "日一二三四五六"
+
+
+def taiwan(year):
+    """{date: (is_holiday, description)}, or None when the year can't be fetched"""
+    f = os.path.join(CACHE, f"tw-{year}.json")
+    if not os.path.exists(f):
+        try:
+            data = urllib.request.urlopen(TW_URL.format(year), timeout=5).read()
+            json.loads(data)
+        except (OSError, ValueError):
+            return None
+        os.makedirs(CACHE, exist_ok=True)
+        open(f, "wb").write(data)
+    return {dt.datetime.strptime(d["date"], "%Y%m%d").date(): (d["isHoliday"], d["description"])
+            for d in json.load(open(f, encoding="utf-8"))}
+
+
+def nyse(year):
+    """{date: text} closures and early closes"""
+    try:
+        import holidays
+        out = {d: f"休市 · {n}" for d, n in holidays.financial_holidays("NYSE", years=year).items()}
+    except ImportError:
+        return {}
+    thanksgiving = [dt.date(year, 11, d) for d in range(1, 31) if dt.date(year, 11, d).weekday() == 3][3]
+    early = [thanksgiving + dt.timedelta(days=1)]
+    for d in (dt.date(year, 7, 3), dt.date(year, 12, 24)):   # eve of a holiday that falls Tue-Fri
+        if d.weekday() <= 3:
+            early.append(d)
+    for d in early:
+        out.setdefault(d, "提早收盤 13:00 ET")
+    return out
+
+
+def status(d):
+    tw, us = taiwan(d.year) or {}, nyse(d.year)
+    t = "台灣放假" if tw.get(d, (d.weekday() >= 5,))[0] else "台灣上班"
+    u = "美股" + us[d] if d in us else "美股休市" if d.weekday() >= 5 else "美股開市"
+    return f"{t} · {u}"
+
+
+def render(year, month):
+    tw = taiwan(year) or {}
+    us = nyse(year)
+    today = dt.date.today()
+    head = f'<span color="{ACCENT}"><b>{year} 年 {month} 月</b></span>'
+    grid = [head, " ".join(f'<span color="{MUTED}">{w}</span>' for w in WEEK)]
+    for week in calendar.Calendar(firstweekday=6).monthdatescalendar(year, month):
+        cells = []
+        for d in week:
+            s = f"{d.day:2d}"
+            hol, desc = tw.get(d, (d.weekday() >= 5, ""))
+            if d.month != month:
+                color = "#3b4261"
+            elif hol and desc:
+                color = RED
+            elif hol:
+                color = MUTED
+            elif d.weekday() >= 5:   # weekend that is a working day (補班)
+                color = CYAN
+            else:
+                color = FG
+            attrs = f'color="{color}"'
+            if d.month == month and d in us:
+                attrs += f' underline="single" underline_color="{YELLOW}"'
+            if d == today:
+                attrs += f' background="{ACCENT}" color="#1a1b26"'
+            cells.append(f"<span {attrs}>{s}</span>")
+        grid.append(" ".join(cells))
+    legend = (f'<span color="{RED}">紅</span> 台灣假日  <span color="{CYAN}">藍</span> 補班  '
+              f'<span color="{YELLOW}">底線</span> 美股休市／提早收盤')
+    note = "" if tw else f'\n<span color="{YELLOW}">{year} 年台灣行事曆還沒公布或下載失敗</span>'
+    msg = ("\n".join(grid) + "\n\n" + legend
+           + f"\n今天 {today.month}/{today.day}（{WEEK[(today.weekday() + 1) % 7]}）：{status(today)}" + note)
+
+    rows = []
+    for d in sorted(set(k for k in tw if k.month == month and tw[k][1]) | set(k for k in us if k.month == month)):
+        day = f"{d.month:2d}/{d.day:02d} {WEEK[(d.weekday() + 1) % 7]}"
+        if d in tw and tw[d][1]:
+            rows.append(f'{day}  <span color="{RED}">台灣</span>  {html.escape(tw[d][1])}')
+        if d in us:
+            rows.append(f'{day}  <span color="{YELLOW}">美股</span>  {html.escape(us[d])}')
+    return msg, rows or ["這個月沒有台灣假日或美股休市"]
+
+
+def main():
+    arg = sys.argv[1] if sys.argv[1:] else dt.date.today().strftime("%Y-%m")
+    year, month = map(int, arg.split("-"))
+    while True:
+        msg, rows = render(year, month)
+        r = subprocess.run(["rofi", "-dmenu", "-i", "-no-custom", "-markup-rows", "-dpi", os.environ.get("OMP_DPI", "180"),
+                            "-p", "← →  換月", "-mesg", msg,
+                            "-kb-move-char-back", "Control+b", "-kb-move-char-forward", "Control+f",
+                            "-kb-custom-1", "Left", "-kb-custom-2", "Right",
+                            "-theme-str", "window { width: 64ch; } textbox { horizontal-align: 0.5; } listview { lines: 8; }"],
+                           input="\n".join(rows), capture_output=True, text=True)
+        if r.returncode == 10:
+            year, month = (year, month - 1) if month > 1 else (year - 1, 12)
+        elif r.returncode == 11:
+            year, month = (year, month + 1) if month < 12 else (year + 1, 1)
+        else:
+            return
+
+
+main()

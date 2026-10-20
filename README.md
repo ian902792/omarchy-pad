@@ -56,7 +56,8 @@ GitHub private repo `ian902792/omarchy-pad`。平板與 Mac 都是 clone，改�
 | Super+E | Thunar（側邊欄有 下載 / 圖片 / 截圖 / 相機；照片用 ristretto 開） |
 | Super+Shift+S | 截圖，存到 Android 的 圖片/Screenshots |
 | Super+W | 關閉視窗 |
-| Super+F / V / J / S | 全螢幕 / 浮動 / 切換分割方向 / 分頁版面 |
+| Super+C / Super+V | 終端機裡複製 / 貼上（與 Android 剪貼簿同步；其他 App 用 Ctrl+C / Ctrl+V） |
+| Super+F / Shift+V / J / S | 全螢幕 / 浮動 / 切換分割方向 / 分頁版面 |
 | Super+方向鍵（+Shift） | 移動焦點（移動視窗） |
 | Super+-/=（+Shift） | 調整寬度（高度） |
 | Super+1…6（+Shift） | 切換桌面（把視窗移過去） |

@@ -14,6 +14,7 @@ KEYS = [
     ("Super+S", "分頁 / 並排"),
     ("Super+F", "全螢幕"),
     ("Super+W", "關閉"),
+    ("Super+C / V", "複製 / 貼上（也能貼 Android 的文字）"),
     ("Super+1…6", "切換桌面（+Shift 移過去）"),
     ("Super+E", "檔案"),
     ("Super+Shift+S", "截圖（存到 圖片/Screenshots）"),

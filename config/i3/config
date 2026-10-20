@@ -38,7 +38,7 @@ bindsym $mod+i exec --no-startup-id fcitx5-remote -t
 # --- windows ---
 bindsym $mod+w kill
 bindsym $mod+f fullscreen toggle
-bindsym $mod+v floating toggle
+bindsym $mod+Shift+v floating toggle
 bindsym $mod+j split toggle
 bindsym $mod+s layout toggle tabbed split
 

@@ -151,6 +151,10 @@ def daemon():
                     if refresh():
                         break
                     time.sleep(0.3)
+                if ev["change"] == "new":   # a new kitty loads its configured image late: set it again
+                    time.sleep(1.5)
+                    shown.pop(ev["container"].get("window"), None)
+                    refresh()
         time.sleep(1)
 
 

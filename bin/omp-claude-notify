@@ -20,7 +20,7 @@ if ev.get("hook_event_name") == "Stop":
             sys.exit()
     except OSError:
         pass
-    msg, say = "完成了，等你回覆", "Claude 完成了"
+    msg, say = "完成了，等你回覆", "Claude is done"
 else:
     msg, say = ev.get("message") or "需要你的回應", "Claude 需要你確認"
 title = f"Claude · {os.path.basename(ev.get('cwd', '')) or '~'}"

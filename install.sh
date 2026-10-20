@@ -12,7 +12,7 @@ apt-get install -y -o Dpkg::Options::=--force-confold x11-repo glibc-repo
 apt-get update
 apt-get install -y -o Dpkg::Options::=--force-confold \
     termux-x11-nightly i3 i3status rofi dunst kitty python-pillow fcitx5 fcitx5-chinese-addons fcitx5-gtk3 libime xorg-xrdb xorg-xsetroot xorg-xkbcomp dbus thunar ristretto xclip papirus-icon-theme clang \
-    openssh mosh git gh starship nodejs-lts neovim fzf ripgrep jq termux-api glibc-runner
+    openssh mosh git gh starship nodejs-lts neovim fzf ripgrep jq termux-api lazygit fd bat eza zoxide git-delta uv glibc-runner
 
 echo "==> font (JetBrainsMono Nerd Font)"
 fdir="$PREFIX/share/fonts/JetBrainsMonoNF"
@@ -37,6 +37,10 @@ for f in "$ROOT"/bin/*; do ln -sf "$f" ~/.local/bin/; done
 "$ROOT/bin/omp-watermark" >/dev/null   # key cheat sheet behind kitty text
 mkdir -p ~/.local/lib && clang -shared -fPIC -O2 -o ~/.local/lib/omp-notag.so "$ROOT/lib/omp-notag.c"
 ln -sf "$ROOT/config/starship.toml" ~/.config/starship.toml
+# git diff/log/show through delta (config/gitconfig); ~/.gitconfig keeps your own settings
+git config --global --get-all include.path | grep -qxF "$ROOT/config/gitconfig" ||
+    git config --global --add include.path "$ROOT/config/gitconfig"
+mkdir -p ~/.config/lazygit && ln -sf "$ROOT/config/lazygit/config.yml" ~/.config/lazygit/config.yml
 # ~/.bashrc stays yours: drop the old one-line PATH hook, then source config/bashrc once
 sed -i '/# omarchy-pad$/d' ~/.bashrc 2>/dev/null || true
 grep -qs 'omarchy-pad/config/bashrc' ~/.bashrc || echo ". \"$ROOT/config/bashrc\"" >> ~/.bashrc

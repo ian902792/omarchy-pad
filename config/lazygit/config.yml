@@ -1,0 +1,11 @@
+# lazygit (alias lg): Tokyo Night accents, diffs through delta
+gui:
+  nerdFontsVersion: "3"
+  theme:
+    activeBorderColor: ["#7aa2f7", bold]
+    inactiveBorderColor: ["#414868"]
+    selectedLineBgColor: ["#283457"]
+git:
+  paging:
+    colorArg: always
+    pager: delta --paging=never --syntax-theme=base16

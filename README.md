@@ -15,6 +15,7 @@ OPPO Pad 4 Pro（ColorOS / Android 16）上的鍵盤導向開發桌面：**Termu
 | 字型 | JetBrainsMono Nerd Font | |
 | 解析度 / 縮放 | X 以原生的 `OMP_SCALE`%（預設 75% = 2544×1800）繪製，DPI 跟著換算 | 延遲跟像素數成正比：100% 最清晰、50% 最快；改 `~/.config/omarchy-pad/env` 後重開桌面。GTK 用 `GDK_SCALE=2 GDK_DPI_SCALE=0.5` |
 | 遠端 | mosh → Mac（Tailscale IP）→ `herdr` | |
+| 狀態列 | i3status + `bin/omp-status`（電池，來自 Termux:API） | 沒接電源、電量低於 25% 時電池顯示紅色 |
 | Claude Code | linux-arm64 glibc 版，經 glibc-runner 的 loader 執行 | 沒有 Android 版；見 `bin/claude` |
 
 ## 安裝（在 Termux app 前景執行）
@@ -66,6 +67,22 @@ GitHub private repo `ian902792/omarchy-pad`。平板與 Mac 都是 clone，改�
 **Super 鍵需要實體鍵盤驗證**：已啟用 Termux:X11 的 KeyInterceptor 無障礙服務與 `dexMetaKeyCapture`，
 但 adb 注入的 Super 會被 ColorOS 拿走，所以只確認了 X 端（xdotool）快捷鍵可用。
 如果實體鍵盤的 Super 也被吃掉：把 `config/i3/config` 的 `set $mod Mod4` 改成 `Mod1`（Alt），在終端機執行 `i3-msg restart`。
+
+## 終端機工具
+
+install.sh 會裝好並設定（設定在 `config/bashrc`、`config/gitconfig`、`config/lazygit/config.yml`）：
+
+| 指令 | 用途 | 常用 |
+|---|---|---|
+| `lg`（lazygit） | 選單式 git：看改動、分段 commit、切 branch、push | 方向鍵選、空白鍵 stage、`c` commit、`P` push、`?` 說明、`q` 離開 |
+| `ls` / `ll` / `tree`（eza） | 有顏色和圖示的 ls；`ll` 會顯示 git 狀態 | `ll`、`tree -L 2` |
+| `cat`（bat） | 有語法高亮的 cat；要行號和捲動用 `bat 檔名` | `bat install.sh` |
+| `z`（zoxide） | 跳到常去的資料夾，只要打一部分名稱 | `z omarchy`、`zi`（用選單挑） |
+| `fd` | 找檔案，比 find 快、語法簡單 | `fd watermark`、`fd -e sh` |
+| `git diff`（delta） | diff 有語法高亮和行號；`n` / `N` 跳到下一個 / 上一個檔案 | `git diff`、`git show` |
+| `uv` | Python 版本、套件、虛擬環境 | `uv venv`、`uv pip install x`、`uv run script.py` |
+
+原本的指令都還在：`command ls`、`command cat`、`\cat`。
 
 ## Claude Code
 

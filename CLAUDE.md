@@ -17,6 +17,9 @@ Synced via GitHub (`git@github.com:ian902792/omarchy-pad.git`, private). Copies:
 | Thunar sidebar width / hidden Network | xfconf, set by an `exec xfconf-query` line in the i3 config | next desktop start |
 | `config/Xresources` | `~/.Xresources` | restart session (`start.sh`) |
 | `config/starship.toml`, `config/bashrc` | `~/.config/starship.toml`, sourced by `~/.bashrc` | new shell |
+| `config/gitconfig` | included from `~/.gitconfig` (delta pager) | immediate |
+| `config/lazygit/config.yml` | `~/.config/lazygit/config.yml` | next `lg` |
+| `bin/omp-status` (battery block, red < 25%) | i3bar `status_command` | `i3-msg restart` |
 | `bin/*` | `~/.local/bin/*` | immediate |
 | `config/kitty/watermark.png` | generated, gitignored | `omp-watermark` (entries are the `#:` lines in `config/i3/config`) |
 

@@ -1,0 +1,11 @@
+# Included from ~/.gitconfig by install.sh. Diffs through delta, colored with the terminal palette.
+[core]
+	pager = delta
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
+	line-numbers = true
+	syntax-theme = base16
+[merge]
+	conflictStyle = zdiff3

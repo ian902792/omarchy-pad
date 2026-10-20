@@ -1,0 +1,41 @@
+#!/data/data/com.termux/files/usr/bin/python
+# Render the i3 key cheat sheet into config/kitty/watermark.png (kitty draws it centered behind the text).
+# Keep KEYS in sync with config/i3/config. Re-run after editing: omp-watermark
+import os
+from PIL import Image, ImageDraw, ImageFont
+
+KEYS = [
+    ("Super+M", "Mac / herdr 分頁"),
+    ("Super+Return", "新終端機分頁"),
+    ("Super+Space", "啟動 App"),
+    ("Super+Tab", "切換視窗"),
+    ("Super+← →", "切換分頁"),
+    ("Super+Shift+← →", "移動分頁"),
+    ("Super+S", "分頁 / 並排"),
+    ("Super+F", "全螢幕"),
+    ("Super+W", "關閉"),
+    ("Super+1…6", "切換桌面（+Shift 移過去）"),
+    ("Super+E", "檔案"),
+    ("Super+Escape", "離開桌面"),
+]
+BG, KEY, DESC = "#1a1b26", "#454d70", "#363c58"   # faint on the Tokyo Night background
+SIZE = 40                                          # real px (Xft.dpi 240 => ~16 logical px)
+
+mono = ImageFont.truetype(os.path.expandvars("$PREFIX/share/fonts/JetBrainsMonoNF/JetBrainsMonoNerdFont-Regular.ttf"), SIZE)
+cjk = ImageFont.truetype("/system/fonts/NotoSansCJK-Regular.ttc", SIZE, index=3)  # 0 JP, 1 KR, 2 SC, 3 TC
+line, gap = int(SIZE * 1.7), SIZE * 2
+kw = max(mono.getlength(k) for k, _ in KEYS)
+dw = max(cjk.getlength(d) for _, d in KEYS)
+# Full-screen canvas: kitty paints black outside the image, and "centered" crops it evenly in any window size.
+W, H = 3392, 2400   # OPPO Pad 4 Pro panel
+img = Image.new("RGB", (W, H), BG)
+draw = ImageDraw.Draw(img)
+x0 = (W - (kw + gap + dw)) / 2
+y0 = (H - line * len(KEYS)) / 2
+for i, (k, d) in enumerate(KEYS):
+    y = y0 + i * line
+    draw.text((x0 + kw - mono.getlength(k), y), k, font=mono, fill=KEY)
+    draw.text((x0 + kw + gap, y), d, font=cjk, fill=DESC)
+out = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "config", "kitty", "watermark.png")
+img.save(out)
+print(os.path.realpath(out))

@@ -11,7 +11,7 @@ apt-get update
 apt-get install -y -o Dpkg::Options::=--force-confold x11-repo glibc-repo
 apt-get update
 apt-get install -y -o Dpkg::Options::=--force-confold \
-    termux-x11-nightly i3 i3status rofi dunst alacritty xorg-xrdb xorg-xsetroot dbus thunar \
+    termux-x11-nightly i3 i3status rofi dunst kitty python-pillow xorg-xrdb xorg-xsetroot dbus thunar \
     openssh mosh git gh nodejs-lts neovim fzf ripgrep jq termux-api glibc-runner
 
 echo "==> font (JetBrainsMono Nerd Font)"
@@ -24,7 +24,7 @@ fi
 
 echo "==> configs (symlinked to $ROOT/config; old dirs kept as *.bak)"
 mkdir -p ~/.config ~/.local/bin ~/.shortcuts
-for d in i3 i3status alacritty rofi dunst; do
+for d in i3 i3status kitty rofi dunst; do
     t=~/.config/$d
     [ -L "$t" ] && rm "$t"
     [ -e "$t" ] && mv "$t" "$t.bak.$(date +%s)"
@@ -32,6 +32,7 @@ for d in i3 i3status alacritty rofi dunst; do
 done
 ln -sf "$ROOT/config/Xresources" ~/.Xresources
 for f in "$ROOT"/bin/*; do ln -sf "$f" ~/.local/bin/; done
+"$ROOT/bin/omp-watermark" >/dev/null   # key cheat sheet behind kitty text
 grep -q 'omarchy-pad' ~/.bashrc 2>/dev/null || echo 'export PATH="$HOME/.local/bin:$PATH"  # omarchy-pad' >> ~/.bashrc
 
 # Termux:Widget entries (tasks/ = run in background, no terminal window). Old omarchy-pad entries removed.

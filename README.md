@@ -32,16 +32,30 @@ bash doctor.sh
 install.sh 的步驟：環境偵測 → 確認套件存在於 Termux repo → **備份** → 安裝（只裝缺的）→ 寫入 `~/.config/omarchy-pad/env`
 （已存在則保留）→ 渲染設定 → 靜態驗證。任何一步失敗就停止，不執行後續依賴步驟。日誌：`~/.omarchy-pad/logs/`。
 
-## 啟動 / 停止 / 切換
+## 兩種模式
+
+- **Desktop（XFCE，一般桌面）**：有桌布、桌面圖示、上方面板與下方 Dock，適合觸控。主題色、深色 GTK、DPI 縮放由 `scripts/xfce-theme.sh` 套用。
+- **Tiling（bspwm）**：鍵盤導向的平鋪式桌面（Omarchy 風格）；狀態列左側有 Apps / Terminal 按鈕，可用游標點。
+
+## 一鍵啟動（Termux:Widget）
 
 ```sh
-bash ~/omarchy-pad/start-omarchy.sh        # bspwm 桌面（然後切到 Termux:X11 app）
-bash ~/omarchy-pad/stop-omarchy.sh         # 停止桌面與 X server
-bash ~/omarchy-pad/start-xfce.sh           # XFCE 備援桌面（會先停掉 bspwm）
-bash ~/omarchy-pad/set-theme.sh toggle     # catppuccin <-> tokyo-night；也可指定名稱 / list
+bash ~/omarchy-pad/install-shortcuts.sh    # 建立捷徑；之後開 Termux:Widget 按 CREATE SHORTCUTS
 ```
 
-預設修飾鍵是 **Alt**（見下方「已知限制」）。快捷鍵（`~/.config/sxhkd/sxhkdrc`，模板在 `configs/sxhkd/`）：
+長按桌面的 Termux:Widget 圖示 → **Desktop Start**（XFCE）/ **Tiling Start**（bspwm）/ **Desktop Stop** / **Theme Toggle**。
+啟動後切到 Termux:X11 app。Termux:Widget 啟動時沒有 `SHELL` 變數，已在 `load_env` 補上（否則 sxhkd 會退出）。
+
+## 指令列
+
+```sh
+bash ~/omarchy-pad/start-xfce.sh           # Desktop 模式（XFCE）
+bash ~/omarchy-pad/start-omarchy.sh        # Tiling 模式（bspwm）
+bash ~/omarchy-pad/stop-omarchy.sh         # 停止任一模式與 X server
+bash ~/omarchy-pad/set-theme.sh toggle     # catppuccin <-> tokyo-night（兩種模式都會即時更新）
+```
+
+以下快捷鍵只適用 Tiling 模式。預設修飾鍵是 **Alt**（見下方「已知限制」）。快捷鍵（`~/.config/sxhkd/sxhkdrc`，模板在 `configs/sxhkd/`）：
 
 | 快捷鍵 | 動作 |
 |---|---|

@@ -7,3 +7,14 @@
 @define-color theme_selected_fg_color @BG@;
 @define-color borders @SURFACE1@;
 @define-color insensitive_fg_color @MUTED@;
+
+/* XFCE desktop icon labels (xfdesktop) must be readable on the dark wallpaper */
+XfdesktopIconView.view, .xfdesktop-icon-view {
+    color: @FG@;
+    text-shadow: 1px 1px 2px @MANTLE@;
+    background-color: transparent;
+}
+XfdesktopIconView.view:selected, .xfdesktop-icon-view:selected {
+    background-color: alpha(@BLUE@, 0.45);
+    color: @FG@;
+}

@@ -29,7 +29,3 @@ xsetroot -cursor_name left_ptr 2>/dev/null
 "@SCRIPTS@/wallpaper.sh" &
 pgrep -x sxhkd >/dev/null || sxhkd &
 "@SCRIPTS@/polybar-launch.sh" &
-# First screen: open one terminal if there is no window yet (only for a fresh start)
-if [ -n "$OMP_AUTOSTART" ] && [ -z "$(bspc query -N -n .window)" ]; then
-    ( sleep 1.5; @TERMINAL@ ) &
-fi

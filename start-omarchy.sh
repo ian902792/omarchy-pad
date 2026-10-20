@@ -12,7 +12,6 @@ start_audio
 start_x11
 apply_gpu_env
 export XDG_CONFIG_HOME="$HOME/.config"
-export OMP_AUTOSTART=1   # bspwmrc opens one terminal so the first screen is not empty
 
 if command -v dbus-launch >/dev/null 2>&1; then
     exec dbus-launch --exit-with-session bspwm

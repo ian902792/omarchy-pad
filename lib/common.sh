@@ -22,6 +22,8 @@ OMP_MANAGED_PATHS=(
     .config/omarchy-pad
     .config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
     .config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml
+    .config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
+    .config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
     .Xresources
 )
 

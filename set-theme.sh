@@ -37,4 +37,10 @@ if xdpyinfo >/dev/null 2>&1 && is_running bspwm; then
     sh "$HOME/.config/bspwm/bspwmrc" >/dev/null 2>&1 || warn "live reload of bspwmrc failed"
     info "live-reloaded bspwm colours, polybar, wallpaper"
 fi
+if pgrep -x xfce4-session >/dev/null 2>&1 && command -v dbus-launch >/dev/null 2>&1; then
+    # XFCE settings live in its session bus; take the address from the running session
+    bus=$(tr '\0' '\n' < "/proc/$(pgrep -x xfce4-session | head -1)/environ" 2>/dev/null | sed -n 's/^DBUS_SESSION_BUS_ADDRESS=//p')
+    [ -n "$bus" ] && DBUS_SESSION_BUS_ADDRESS="$bus" "$OMP_ROOT/scripts/xfce-theme.sh" >/dev/null 2>&1 \
+        && info "re-applied XFCE wallpaper/theme"
+fi
 info "theme is now: $want"

@@ -1,0 +1,10 @@
+#!/data/data/com.termux/files/usr/bin/python
+# Super+Shift+S: save the whole X screen to Android's Pictures/Screenshots (needs termux-setup-storage once).
+import os, subprocess, time
+from PIL import ImageGrab
+d = os.path.expanduser("~/storage/pictures/Screenshots")
+os.makedirs(d, exist_ok=True)
+f = os.path.join(d, time.strftime("linux-%Y%m%d-%H%M%S.png"))
+ImageGrab.grab(xdisplay=os.environ.get("DISPLAY", ":0")).save(f)
+subprocess.run(["notify-send", "-t", "3000", "截圖已儲存", f])
+print(f)

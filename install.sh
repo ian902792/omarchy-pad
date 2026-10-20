@@ -11,7 +11,7 @@ apt-get update
 apt-get install -y -o Dpkg::Options::=--force-confold x11-repo glibc-repo
 apt-get update
 apt-get install -y -o Dpkg::Options::=--force-confold \
-    termux-x11-nightly i3 i3status rofi dunst kitty python-pillow fcitx5 fcitx5-chinese-addons fcitx5-gtk3 libime xorg-xrdb xorg-xsetroot xorg-xkbcomp dbus thunar \
+    termux-x11-nightly i3 i3status rofi dunst kitty python-pillow fcitx5 fcitx5-chinese-addons fcitx5-gtk3 libime xorg-xrdb xorg-xsetroot xorg-xkbcomp dbus thunar ristretto \
     openssh mosh git gh starship nodejs-lts neovim fzf ripgrep jq termux-api glibc-runner
 
 echo "==> font (JetBrainsMono Nerd Font)"
@@ -31,6 +31,8 @@ for d in i3 i3status kitty rofi dunst gtk-3.0; do
     ln -s "$ROOT/config/$d" "$t"
 done
 ln -sf "$ROOT/config/Xresources" ~/.Xresources
+# photos open in ristretto (Thunar double-click)
+xdg-mime default org.xfce.ristretto.desktop image/jpeg image/png image/gif image/webp image/heic
 for f in "$ROOT"/bin/*; do ln -sf "$f" ~/.local/bin/; done
 "$ROOT/bin/omp-watermark" >/dev/null   # key cheat sheet behind kitty text
 ln -sf "$ROOT/config/starship.toml" ~/.config/starship.toml

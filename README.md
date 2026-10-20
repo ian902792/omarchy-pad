@@ -53,7 +53,8 @@ GitHub private repo `ian902792/omarchy-pad`。平板與 Mac 都是 clone，改�
 | Super+T | 新終端機分頁（Super+Return 實體鍵盤會被 ColorOS 攔走） |
 | Super+Space / Super+Tab | 應用程式啟動器 / 視窗切換 |
 | **Super+M** | 切到 herdr 分頁；還沒開就 mosh 到 Mac 開一個（只會有一條連線） |
-| Super+E | Thunar |
+| Super+E | Thunar（側邊欄有 下載 / 圖片 / 截圖 / 相機；照片用 ristretto 開） |
+| Super+Shift+S | 截圖，存到 Android 的 圖片/Screenshots |
 | Super+W | 關閉視窗 |
 | Super+F / V / J / S | 全螢幕 / 浮動 / 切換分割方向 / 分頁版面 |
 | Super+方向鍵（+Shift） | 移動焦點（移動視窗） |

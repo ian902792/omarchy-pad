@@ -16,6 +16,7 @@ KEYS = [
     ("Super+W", "關閉"),
     ("Super+1…6", "切換桌面（+Shift 移過去）"),
     ("Super+E", "檔案"),
+    ("Super+Shift+S", "截圖（存到 圖片/Screenshots）"),
     ("Ctrl+Space / Super+I", "中 / 英（自由大新）"),
     ("Space / 1…0", "選字（- = 翻頁）"),
     ("Super+Escape", "離開桌面"),

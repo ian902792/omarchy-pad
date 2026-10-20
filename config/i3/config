@@ -30,6 +30,8 @@ bindsym $mod+Tab exec rofi -show window -dpi $OMP_DPI
 # Super+M: focus the herdr tab if it's open, otherwise open it (one mosh session, not one per press)
 bindsym $mod+m exec sh -c 'i3-msg -q "[instance=omp-mac] focus" || kitty --name omp-mac --title Mac omp-mac'
 bindsym $mod+e exec thunar
+# screenshot to Android Pictures/Screenshots
+bindsym $mod+Shift+s exec --no-startup-id omp-shot
 # 中/英 toggle, same as fcitx5's own Ctrl+Space (kept in case Android takes Ctrl+Space)
 bindsym $mod+i exec --no-startup-id fcitx5-remote -t
 

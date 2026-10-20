@@ -79,6 +79,10 @@ Termux 的 `LD_PRELOAD`（bionic 函式庫）無法載入 glibc 程序，所以�
 - Termux:X11 偏好：`fullscreen:true hideCutout:true showAdditionalKbd:false dexMetaKeyCapture:true`（`termux-x11-preference`，X 執行中才能設）
 - 無障礙：`com.termux.x11/.utils.KeyInterceptor`（攔截 Super 等系統快捷鍵）
 - 電池：Termux、Termux:X11 設為「不限制」，否則背景會被殺
+- 子程序限制（Android 12+ 最多 32 個，超過就把整個桌面連 sshd 一起殺掉）已用 adb 關閉：
+  `adb shell device_config set_sync_disabled_for_tests persistent`、
+  `adb shell device_config put activity_manager max_phantom_processes 2147483647`、
+  `adb shell settings put global settings_enable_monitor_phantom_procs false`（系統更新後要再確認）
 
 ## 已知限制
 

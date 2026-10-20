@@ -20,12 +20,26 @@ padding = 2
 module-margin = 2
 font-0 = monospace:size=11;3
 font-1 = Symbols Nerd Font:size=11;3
-modules-left = bspwm
+modules-left = apps term bspwm
 modules-center = xwindow
 modules-right = network battery date
 enable-ipc = true
 wm-restack = bspwm
 cursor-click = pointer
+
+[module/apps]
+type = custom/text
+content = " Apps "
+content-background = ${colors.mauve}
+content-foreground = ${colors.background}
+click-left = rofi -show drun
+
+[module/term]
+type = custom/text
+content = " Terminal "
+content-background = ${colors.surface}
+content-foreground = ${colors.green}
+click-left = @TERMINAL@
 
 [module/bspwm]
 type = internal/bspwm

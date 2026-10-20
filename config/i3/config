@@ -94,4 +94,5 @@ bar {
 exec --no-startup-id dunst
 exec --no-startup-id fcitx5 -d
 exec --no-startup-id xsetroot -solid '#1a1b26'
-exec kitty
+# first terminal waits (max 3s) for fcitx5's IBus address file, else kitty starts without the input method
+exec sh -c 'for i in 1 2 3 4 5 6 7 8 9 10; do ls ~/.config/ibus/bus/*-unix-0 >/dev/null 2>&1 && break; sleep 0.3; done; exec kitty'

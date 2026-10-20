@@ -23,7 +23,8 @@ client.urgent           #f7768e #f7768e #1a1b26 #f7768e   #f7768e
 client.background       #1a1b26
 
 # --- apps ---
-bindsym $mod+Return exec kitty
+# Super+Return never reaches X11 from a physical keyboard (ColorOS takes Meta+Enter)
+bindsym $mod+t exec kitty
 bindsym $mod+space exec rofi -show drun
 bindsym $mod+Tab exec rofi -show window
 # Super+M: focus the herdr tab if it's open, otherwise open it (one mosh session, not one per press)

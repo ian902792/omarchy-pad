@@ -44,7 +44,7 @@ Mac 端需要：系統設定開「遠端登入」、`brew install mosh`、第一
 
 | 鍵 | 動作 |
 |---|---|
-| Super+Return | 終端機 |
+| Super+T | 新終端機分頁（Super+Return 實體鍵盤會被 ColorOS 攔走） |
 | Super+Space / Super+Tab | 應用程式啟動器 / 視窗切換 |
 | **Super+M** | 切到 herdr 分頁；還沒開就 mosh 到 Mac 開一個（只會有一條連線） |
 | Super+E | Thunar |

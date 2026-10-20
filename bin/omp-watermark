@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 KEYS = [
     ("Super+M", "Mac / herdr 分頁"),
-    ("Super+Return", "新終端機分頁"),
+    ("Super+T", "新終端機分頁"),
     ("Super+Space", "啟動 App"),
     ("Super+Tab", "切換視窗"),
     ("Super+← →", "切換分頁"),

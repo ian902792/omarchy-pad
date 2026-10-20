@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/python
 # Side-by-side ("split") workspaces get a fixed layout, and their kitty windows drop the watermark:
 #   2 windows: 1 | 2      3 windows: 1 | 2/3      4 windows: 2x2 grid      5+: equal columns
-# Tabbed workspaces (the default) are left alone and keep the watermark.
+# Tabbed workspaces (the default) are left alone; their kitty windows get the watermark (kitty.conf has none).
 #   omp-tile daemon   follow i3 window events (i3 autostart; replaces a running daemon)
 #   omp-tile toggle   Super+S: switch the focused workspace between tabbed and split
 #   omp-tile test     self-check of the layout logic, no i3 needed
@@ -83,8 +83,7 @@ shown, seen, fails = {}, {}, {}
 
 def watermark(ws, on):
     """False while a kitty still needs another try: a new kitty opens its socket after the window maps,
-    and applies its configured image whenever it finishes decoding it (seen at 2-3 s), so keep setting
-    it during its first 6 s."""
+    and may not have its window ready in the first second."""
     ok = True
     for w in leaves(ws):
         wid = w["window"]
@@ -94,7 +93,7 @@ def watermark(ws, on):
         pid = kitty_pid(wid)
         if pid and subprocess.run(["kitten", "@", "--to", "unix:" + SOCK.format(pid), "set-background-image",
                                    "--all", WATERMARK if on else "none"], capture_output=True).returncode == 0:
-            if time.time() - seen[wid] > 6:
+            if time.time() - seen[wid] > 1.5:
                 shown[wid] = on
             else:
                 ok = False
@@ -157,7 +156,7 @@ def daemon():
             except ValueError:
                 continue
             if ev.get("change") in ("new", "close", "move", "floating"):
-                for _ in range(25):   # a new kitty needs up to 6 s (see watermark)
+                for _ in range(10):   # a new kitty needs ~1.5 s (see watermark)
                     if refresh():
                         break
                     time.sleep(0.3)

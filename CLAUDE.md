@@ -13,6 +13,8 @@ Synced via GitHub (`git@github.com:ian902792/omarchy-pad.git`, private). Copies:
 | `config/i3status/config` | `~/.config/i3status/config` | `i3-msg restart` |
 | `config/kitty/kitty.conf` | `~/.config/kitty/kitty.conf` | new kitty windows; existing: ctrl+shift+F5 |
 | `config/rofi/config.rasi`, `config/dunst/dunstrc` | `~/.config/{rofi,dunst}/` | next launch / `pkill dunst` |
+| `config/gtk-3.0/{settings.ini,gtk.css,bookmarks}` | `~/.config/gtk-3.0` | restart the app (`thunar -q` quits Thunar's daemon) |
+| Thunar sidebar width / hidden Network | xfconf, set by an `exec xfconf-query` line in the i3 config | next desktop start |
 | `config/Xresources` | `~/.Xresources` | restart session (`start.sh`) |
 | `config/starship.toml`, `config/bashrc` | `~/.config/starship.toml`, sourced by `~/.bashrc` | new shell |
 | `bin/*` | `~/.local/bin/*` | immediate |

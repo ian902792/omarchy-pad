@@ -1,7 +1,9 @@
 #!/data/data/com.termux/files/usr/bin/python
 # i3bar status: i3status plus a battery block (Android only shows the battery to Termux:API,
 # so i3status can't read it). Battery is refreshed every 60 s (termux-battery-status takes ~0.5 s).
-import json, subprocess, sys, time
+# Also: 中/英 of fcitx5 (polled every second; a change makes i3status redraw at once via SIGUSR1)
+# and whether the Mac (MAC= in ~/.config/omarchy-pad/env) answers on ssh port 22, checked every 30 s.
+import json, os, signal, socket, subprocess, sys, threading, time
 
 ICONS = "󰂎󰁺󰁻󰁼󰁽󰁾󰁿󰂀󰂁󰂂󰁹"   # 0,10,...,100 %
 cache, last = None, 0
@@ -21,7 +23,54 @@ def battery():
             pass   # Termux:API app missing or slow: keep the last value
     return cache
 
+ime = None   # "中" / "英" / None (fcitx5 not running)
+mac = None   # True / False / None (no MAC= set)
+running = threading.Event()   # i3status has printed: SIGUSR1 before its handler is set would kill it
+
+def watch_ime():
+    global ime
+    while True:
+        try:
+            r = subprocess.run(["fcitx5-remote"], capture_output=True, text=True, timeout=2).stdout.strip()
+            now = {"2": "中", "1": "英"}.get(r)
+        except (OSError, subprocess.TimeoutExpired):
+            now = None
+        if now != ime:
+            ime = now
+            if running.is_set():
+                i3s.send_signal(signal.SIGUSR1)
+        time.sleep(1)
+
+def watch_mac():
+    global mac
+    host = None
+    try:
+        for l in open(os.path.expanduser("~/.config/omarchy-pad/env")):
+            if l.startswith("MAC="):
+                host = l.split("=", 1)[1].split("#")[0].strip().split("@")[-1]
+    except OSError:
+        pass
+    if not host:
+        return
+    while True:
+        try:
+            socket.create_connection((host, 22), timeout=3).close()
+            mac = True
+        except OSError:
+            mac = False
+        time.sleep(30)
+
+def extra():
+    out = []
+    if ime:
+        out.append({"name": "ime", "full_text": f"󰌌 {ime}", "color": "#7aa2f7" if ime == "中" else "#a9b1d6"})
+    if mac is not None:
+        out.append({"name": "mac", "full_text": "󰌢 Mac", "color": "#9ece6a" if mac else "#f7768e"})
+    return out
+
 i3s = subprocess.Popen(["i3status"], stdout=subprocess.PIPE, text=True)
+threading.Thread(target=watch_ime, daemon=True).start()
+threading.Thread(target=watch_mac, daemon=True).start()
 for line in i3s.stdout:
     # protocol: header line, "[", then one JSON array per update prefixed with "," after the first
     prefix = "," if line.startswith(",") else ""
@@ -32,7 +81,10 @@ for line in i3s.stdout:
     if not isinstance(blocks, list):
         print(line, end="", flush=True)   # header {"version":1} and the opening "["
         continue
+    running.set()
     b = battery()
+    # left of memory: 中/英, Mac; just left of the clock: battery
+    blocks[:0] = extra()
     if b:
-        blocks.insert(len(blocks) - 1, b)   # just left of the clock
+        blocks.insert(len(blocks) - 1, b)
     print(prefix + json.dumps(blocks, ensure_ascii=False), flush=True)

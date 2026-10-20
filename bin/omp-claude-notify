@@ -1,0 +1,31 @@
+#!/data/data/com.termux/files/usr/bin/python
+# Claude Code hook (install.sh adds it to ~/.claude/settings.json): tell me when Claude waits for me.
+#   omp-claude-notify start   UserPromptSubmit: remember when the turn began
+#   omp-claude-notify         Stop / Notification: Android notification with sound (heard and seen even when
+#                             Termux:X11 is not in front) plus a dunst popup when the desktop is up.
+# Stop only notifies after turns longer than OMP_NOTIFY_MIN seconds (default 20): short answers you watched happen.
+import json, os, subprocess, sys, time
+
+ev = json.load(sys.stdin)
+sid = ev.get("session_id", "x")
+stamp = os.path.join(os.environ.get("TMPDIR", "/tmp"), f"omp-claude-{sid}.start")
+if sys.argv[1:] == ["start"]:
+    open(stamp, "w").close()
+    sys.exit()
+
+if ev.get("hook_event_name") == "Stop":
+    try:
+        if time.time() - os.path.getmtime(stamp) < int(os.environ.get("OMP_NOTIFY_MIN", "20")):
+            sys.exit()
+    except OSError:
+        pass
+    msg = "完成了，等你回覆"
+else:
+    msg = ev.get("message") or "需要你的回應"
+title = f"Claude · {os.path.basename(ev.get('cwd', '')) or '~'}"
+
+# one notification per session, replaced instead of piling up
+subprocess.run(["termux-notification", "--id", f"claude-{sid}", "--group", "claude", "--title", title,
+                "--content", msg, "--sound", "--priority", "high"], timeout=15)
+if os.environ.get("DBUS_SESSION_BUS_ADDRESS"):
+    subprocess.run(["notify-send", "-a", "Claude", "-t", "8000", title, msg], timeout=5)

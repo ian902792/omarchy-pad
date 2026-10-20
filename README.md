@@ -16,7 +16,8 @@ OPPO Pad 4 Pro（ColorOS / Android 16）上的鍵盤導向開發桌面：**Termu
 | 解析度 / 縮放 | X 以原生的 `OMP_SCALE`%（預設 75% = 2544×1800）繪製，DPI 跟著換算 | 延遲跟像素數成正比：100% 最清晰、50% 最快；改 `~/.config/omarchy-pad/env` 後重開桌面。GTK 用 `GDK_SCALE=2 GDK_DPI_SCALE=0.5` |
 | 遠端 | mosh → Mac（Tailscale IP）→ `herdr` | |
 | 桌布 | Omarchy Tokyo Night 的 `4-sunset-lake`（install.sh 下載到 `~/.local/share/omarchy-pad/wallpaper.jpg`，feh 設定） | 換桌布：覆蓋那個檔案後按 Super+Shift+R |
-| 狀態列 | i3status + `bin/omp-status`（電池，來自 Termux:API） | 沒接電源、電量低於 25% 時電池顯示紅色 |
+| 狀態列 | i3status + `bin/omp-status`（電池，來自 Termux:API；中/英；Mac 連線） | 沒接電源、電量低於 25% 時電池顯示紅色；中/英 切換後 1 秒內更新；Mac 每 30 秒檢查 ssh port，連得到綠色、連不到紅色 |
+| Claude Code 通知 | `bin/omp-claude-notify`（Claude Code hooks，install.sh 寫入 `~/.claude/settings.json`） | Claude 要權限、問問題、或做完超過 20 秒的工作時：Android 通知＋提示音，桌面上另有 dunst 彈窗 |
 | Claude Code | linux-arm64 glibc 版，經 glibc-runner 的 loader 執行 | 沒有 Android 版；見 `bin/claude` |
 
 ## 安裝（在 Termux app 前景執行）
@@ -107,5 +108,5 @@ adb 改不了、要在平板上手動確認的：電池「不限制」（Termux�
 ## 已知限制
 
 - 狀態列：RAM、SoC 溫度、電池（電池要裝 Termux:API App，GitHub 版，跟 Termux 同簽章）。Android 不讓 Termux 讀網路、CPU 使用率。
-- 開網址：Android 設定 → Termux → **預設開啟** 要從「在應用程式中開啟」改成「**在瀏覽器中開啟**」，否則 `termux-open-url` 和點網址都沒反應。改好後點 Termux／Claude Code 裡的網址會用 Android 預設瀏覽器開（`config/bashrc` 設了 `BROWSER=termux-open-url`、`FORCE_HYPERLINK=0`；install.sh 開啟 Termux 的點網址功能）。
+- 開網址：Android 設定 → Termux → **預設開啟** 要從「在應用程式中開啟」改成「**在瀏覽器中開啟**」，否則 `termux-open-url` 和點網址都沒反應。改好後點 Termux、桌面 kitty、Claude Code 裡的網址都會用 Android 預設瀏覽器開（`config/bashrc` 設了 `BROWSER=termux-open-url`、`FORCE_HYPERLINK=0`；install.sh 開啟 Termux 的點網址功能）。
 - Termux:X11 必須保留 `-noreset`：否則 xrdb 寫入的 DPI 會在 X server 重置時消失。

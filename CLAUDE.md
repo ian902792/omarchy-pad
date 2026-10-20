@@ -19,7 +19,8 @@ Synced via GitHub (`git@github.com:ian902792/omarchy-pad.git`, private). Copies:
 | `config/starship.toml`, `config/bashrc` | `~/.config/starship.toml`, sourced by `~/.bashrc` | new shell |
 | `config/gitconfig` | included from `~/.gitconfig` (delta pager) | immediate |
 | `config/lazygit/config.yml` | `~/.config/lazygit/config.yml` | next `lg` |
-| `bin/omp-status` (battery block, red < 25%) | i3bar `status_command` | `i3-msg restart` |
+| `bin/omp-status` (battery block, red < 25%; 中/英 of fcitx5; Mac reachable on :22, green/red) | i3bar `status_command` | `i3-msg restart` |
+| `bin/omp-claude-notify` (Android notification with sound + dunst when Claude waits; Stop only after turns > `OMP_NOTIFY_MIN`=20 s) | hooks in `~/.claude/settings.json`, merged by install.sh | next Claude turn |
 | `bin/omp-tile` (side-by-side layouts; Super+S = `omp-tile toggle`) | daemon from i3 `exec_always` | `i3-msg restart`; `omp-tile test` = self-check |
 | `bin/omp-wallpaper` (feh, re-set on every RandR resize: displayScale lands after i3 starts, else 2x2 tiling) | i3 `exec_always` | `i3-msg restart` |
 | `bin/omp-keys` (key cheat sheet + system info: first entry of Super+Space, rofi combi; rows = `#:` lines in `config/i3/config`, Enter runs the binding) | rofi script mode | immediate |
@@ -56,7 +57,8 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
   "Could not parse con id". `lib/omp-notag.c` (built by install.sh, preloaded by `omp-session`) turns tagging off.
   The `NATIVE_HEAP_POINTER_TAGGING` compat flag does not help: it only covers the app process, not what Termux execs.
 - `termux-open-url` (`$BROWSER`, tapped URLs) silently does nothing (am still reports success) until Android
-  Settings → Termux → 預設開啟 is switched from「在應用程式中開啟」to「在瀏覽器中開啟」. Verified with Termux in the foreground.
+  Settings → Termux → 預設開啟 is switched from「在應用程式中開啟」to「在瀏覽器中開啟」. Then it works from the Termux app and from the X desktop.
+- i3status dies on SIGUSR1 sent before it prints its first line (handler not set yet): omp-status waits for that.
 - Android only exposes `/proc/meminfo` and `thermal_zone0`; no CPU/network stats. Battery only via the Termux:API app
   (`termux-battery-status`, ~0.5 s): `bin/omp-status` wraps i3status and adds it, refreshed every 60 s.
 - Claude Code: linux-arm64 glibc build run via `bin/claude` (glibc ld.so, LD_PRELOAD dropped, restored for the Bash tool by a CLAUDE_CODE_SHELL wrapper so bash itself loads termux-exec and `#!/usr/bin/env` scripts run). No self-update; update with `install.sh`.

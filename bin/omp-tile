@@ -27,9 +27,9 @@ def sig(node):
     if node.get("window"):
         return "L"
     kids = node.get("nodes", [])
-    if len(kids) == 1:
-        return sig(kids[0])   # a container with one child doesn't change the shape
     kind = {"splith": "h", "splitv": "v"}.get(node["layout"], "t")
+    if len(kids) == 1 and kind != "t":
+        return sig(kids[0])   # a split with one child doesn't change the shape (a single tab still is a tab)
     return kind + "[" + ",".join(sig(k) for k in kids) + "]"
 
 
@@ -78,20 +78,29 @@ def kitty_pid(wid):
     return pids[wid]
 
 
-shown = {}
+shown, seen, fails = {}, {}, {}
 
 
 def watermark(ws, on):
-    """Returns False if a kitty didn't answer yet (a new kitty opens its socket after the window maps)."""
+    """False while a kitty still needs another try: a new kitty opens its socket after the window maps,
+    and loads its configured image after that, so settings made in its first 2 s don't count."""
     ok = True
     for w in leaves(ws):
-        if (w.get("window_properties") or {}).get("class") != "kitty" or shown.get(w["window"]) == on:
+        wid = w["window"]
+        if (w.get("window_properties") or {}).get("class") != "kitty" or shown.get(wid) == on:
             continue
-        pid = kitty_pid(w["window"])
+        seen.setdefault(wid, time.time())
+        pid = kitty_pid(wid)
         if pid and subprocess.run(["kitten", "@", "--to", "unix:" + SOCK.format(pid), "set-background-image",
                                    "--all", WATERMARK if on else "none"], capture_output=True).returncode == 0:
-            shown[w["window"]] = on
+            if time.time() - seen[wid] > 2:
+                shown[wid] = on
+            else:
+                ok = False
+        elif fails.get(wid, 0) >= 5:
+            shown[wid] = on   # no socket (started before listen_on was set): leave it alone
         else:
+            fails[wid] = fails.get(wid, 0) + 1
             ok = False
     return ok
 
@@ -147,14 +156,10 @@ def daemon():
             except ValueError:
                 continue
             if ev.get("change") in ("new", "close", "move", "floating"):
-                for _ in range(10):   # wait up to ~3 s for a new kitty's socket
+                for _ in range(12):   # a new kitty needs ~2 s (see watermark)
                     if refresh():
                         break
                     time.sleep(0.3)
-                if ev["change"] == "new":   # a new kitty loads its configured image late: set it again
-                    time.sleep(1.5)
-                    shown.pop(ev["container"].get("window"), None)
-                    refresh()
         time.sleep(1)
 
 
@@ -170,6 +175,7 @@ def test():
     assert sig({"layout": "splith", "nodes": [leaf, v]}) == TARGET[3]
     assert sig({"layout": "splith", "nodes": [v, v]}) == TARGET[4]
     assert sig({"layout": "splith", "nodes": [{"layout": "tabbed", "nodes": [leaf, leaf]}]}) == "t[L,L]"
+    assert sig({"layout": "splith", "nodes": [{"layout": "tabbed", "nodes": [leaf]}]}) == "t[L]"   # one tab
     print("ok")
 
 

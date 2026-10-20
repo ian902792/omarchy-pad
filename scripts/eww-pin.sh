@@ -19,7 +19,9 @@ place() {
     [ -n "$id" ] || { warn "eww window '$1' not found"; return; }
     xprop -id "$id" -f _MOTIF_WM_HINTS 32c -set _MOTIF_WM_HINTS "2, 0, 0, 0, 0" 2>/dev/null
     xprop -id "$id" -f WM_HINTS 32c -set WM_HINTS "1, 0, 0, 0, 0, 0, 0, 0, 0" 2>/dev/null   # never take focus
-    wmctrl -i -r "$id" -b add,below,sticky,skip_taskbar,skip_pager 2>/dev/null
+    # wmctrl accepts at most two properties per -b call
+    wmctrl -i -r "$id" -b add,below,sticky 2>/dev/null
+    wmctrl -i -r "$id" -b add,skip_taskbar,skip_pager 2>/dev/null
     xdotool windowmove "$id" "$(s "$2")" "$(s "$3")"
     # blank title so the menu bar's active-window label never shows "Eww - ..." (eww windows get focus on map)
     xdotool set_window --name " " "$id"

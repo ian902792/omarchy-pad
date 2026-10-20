@@ -15,7 +15,7 @@ r() {   # r STATUS name detail
 }
 export DISPLAY="${DISPLAY:-:0}"
 XUP=0; xdpyinfo >/dev/null 2>&1 && XUP=1
-XFCE_ACTIVE=0; pgrep -x xfce4-session >/dev/null 2>&1 && XFCE_ACTIVE=1
+XFCE_ACTIVE=0; { pgrep -x xfce4-session || pgrep -x xfwm4; } >/dev/null 2>&1 && XFCE_ACTIVE=1
 
 # --- 1. Linux userspace -------------------------------------------------------
 if [ "${PREFIX:-}" = "$OMP_TERMUX_PREFIX" ] && [ "$(uname -m)" = "aarch64" ] && dpkg -s bspwm >/dev/null 2>&1; then
@@ -73,7 +73,7 @@ else
 fi
 live() {  # live name process
     if [ "$XUP" = 0 ]; then r SKIP "$1" "X not running"
-    elif [ "$XFCE_ACTIVE" = 1 ] && ! pgrep -x bspwm >/dev/null 2>&1; then r SKIP "$1" "XFCE session is active (bspwm checks apply to the bspwm session)"
+    elif [ "$XFCE_ACTIVE" = 1 ] && [ "$2" != polybar ] && ! pgrep -x bspwm >/dev/null 2>&1; then r SKIP "$1" "Desktop/XFCE session is active (bspwm checks apply to the Tiling session)"
     elif pgrep -x "$2" >/dev/null 2>&1; then r PASS "$1" "pid $(pgrep -x "$2" | head -1)"
     else r FAIL "$1" "$2 not running while X is up"; fi
 }
@@ -86,6 +86,16 @@ else
 fi
 live "hotkey daemon (sxhkd)" sxhkd
 live "status bar (polybar)" polybar
+desk() {  # desk name process : Desktop-session components
+    if [ "$XUP" = 0 ]; then r SKIP "$1" "X not running"
+    elif ! pgrep -x xfwm4 >/dev/null 2>&1 || pgrep -x bspwm >/dev/null 2>&1 || pgrep -x xfce4-session >/dev/null 2>&1; then r SKIP "$1" "Desktop session not active"
+    elif pgrep -x "$2" >/dev/null 2>&1; then r PASS "$1" "pid $(pgrep -x "$2" | head -1)"
+    else r FAIL "$1" "$2 not running in the Desktop session"; fi
+}
+desk "window manager (xfwm4)" xfwm4
+desk "compositor (picom)" picom
+desk "dock (plank)" plank
+desk "widgets (eww daemon)" eww
 if [ "$XUP" = 1 ] && pgrep -x polybar >/dev/null 2>&1; then
     if xprop -root _NET_CLIENT_LIST >/dev/null 2>&1 && ! tail -n 20 "$OMP_LOG_DIR/polybar.log" 2>/dev/null | grep -qiE 'error|cannot|failed'; then
         r PASS "polybar log clean" "no errors in last 20 lines"

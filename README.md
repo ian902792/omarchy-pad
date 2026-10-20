@@ -32,10 +32,25 @@ bash doctor.sh
 install.sh 的步驟：環境偵測 → 確認套件存在於 Termux repo → **備份** → 安裝（只裝缺的）→ 寫入 `~/.config/omarchy-pad/env`
 （已存在則保留）→ 渲染設定 → 靜態驗證。任何一步失敗就停止，不執行後續依賴步驟。日誌：`~/.omarchy-pad/logs/`。
 
-## 兩種模式
+## 三種模式
 
-- **Desktop（XFCE，一般桌面）**：有桌布、桌面圖示、上方面板與下方 Dock，適合觸控。主題色、深色 GTK、DPI 縮放由 `scripts/xfce-theme.sh` 套用。
-- **Tiling（bspwm）**：鍵盤導向的平鋪式桌面（Omarchy 風格）；狀態列左側有 Apps / Terminal 按鈕，可用游標點。
+- **Desktop（預設，macOS / Omarchy 社群風格）**：`start-desktop.sh`。xfwm4（可浮動視窗，左上角 ×–□ 按鈕、標題置中）+ picom（圓角、陰影、半透明終端機）
+  + Polybar 上方選單列（Apps、視窗名稱、日期時間、RAM、SoC 溫度）+ Plank 底部玻璃 Dock + eww 桌面小工具（時鐘、RAM/溫度圓環）+ 夜景桌布。
+  適合觸控；Dock 的第一個圖示、選單列左上角的 Apps 都會叫出 rofi。
+- **Tiling（bspwm）**：`start-omarchy.sh`。鍵盤導向的平鋪式桌面；狀態列左側有 Apps / Terminal 按鈕。
+- **Classic XFCE**：`start-xfce.sh`。原版 XFCE，備援用。
+
+### Desktop 模式的資料來源（不造假）
+Android 只讓 Termux app 讀到 `/proc/meminfo`（RAM）與 `thermal_zone0`（SoC 溫度）；`/proc/stat`、`/proc/loadavg`、電池、GPU 負載、網路流量都是 **Permission denied**（已實測）。
+所以小工具只放 RAM 與溫度，**沒有** CPU/GPU/電池圓環。要電池可安裝 Termux:API app + `pkg install termux-api` 後再擴充。
+
+### 換桌布
+預設桌布是 `tools/make-wallpaper.py` 程序化產生的夜景（原創）。要用自己的圖：在 `~/.config/omarchy-pad/env` 加 `OMP_WALLPAPER=/path/to/image.jpg`，然後 `render.sh` 並重啟。
+
+### 已知限制（Desktop）
+- 沒有模糊背景（picom 用 xrender 後端，模糊需要 GL 後端，未啟用以求穩定）。
+- 圖示主題 Papirus-Dark，GTK 主題 Adwaita 深色 + 調色板覆寫；不是 WhiteSur（Termux repo 沒有，也未從外部抓取）。
+- Plank 重新啟動時 dock 會重新排列；視窗開啟位置為置中。
 
 ## 一鍵啟動（Termux:Widget）
 
@@ -43,16 +58,17 @@ install.sh 的步驟：環境偵測 → 確認套件存在於 Termux repo → **
 bash ~/omarchy-pad/install-shortcuts.sh    # 建立捷徑；之後開 Termux:Widget 按 CREATE SHORTCUTS
 ```
 
-長按桌面的 Termux:Widget 圖示 → **Desktop Start**（XFCE）/ **Tiling Start**（bspwm）/ **Desktop Stop** / **Theme Toggle**。
+長按桌面的 Termux:Widget 圖示 → **Desktop Start**（macOS 風格桌面）/ **Tiling Start**（bspwm）/ **Classic XFCE Start** / **Desktop Stop** / **Theme Toggle**。
 啟動後切到 Termux:X11 app。Termux:Widget 啟動時沒有 `SHELL` 變數，已在 `load_env` 補上（否則 sxhkd 會退出）。
 
 ## 指令列
 
 ```sh
-bash ~/omarchy-pad/start-xfce.sh           # Desktop 模式（XFCE）
+bash ~/omarchy-pad/start-desktop.sh        # Desktop 模式（預設）
+bash ~/omarchy-pad/start-xfce.sh           # Classic XFCE（備援）
 bash ~/omarchy-pad/start-omarchy.sh        # Tiling 模式（bspwm）
 bash ~/omarchy-pad/stop-omarchy.sh         # 停止任一模式與 X server
-bash ~/omarchy-pad/set-theme.sh toggle     # catppuccin <-> tokyo-night（兩種模式都會即時更新）
+bash ~/omarchy-pad/set-theme.sh toggle     # catppuccin <-> tokyo-night（三種模式都會即時更新，已開啟的終端機不變色）
 ```
 
 以下快捷鍵只適用 Tiling 模式。預設修飾鍵是 **Alt**（見下方「已知限制」）。快捷鍵（`~/.config/sxhkd/sxhkdrc`，模板在 `configs/sxhkd/`）：

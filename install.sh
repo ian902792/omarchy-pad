@@ -23,7 +23,7 @@ done
 CORE_PKGS=(x11-repo termux-x11-nightly bspwm sxhkd polybar rofi feh xfce4-terminal git zsh starship
            xorg-xsetroot xorg-xrdb xorg-xrandr xorg-xdpyinfo xorg-xprop xdotool wmctrl
            procps dbus pulseaudio fontconfig-utils ttf-nerd-fonts-symbols otf-noto-sans-cjk
-           adwaita-icon-theme)
+           adwaita-icon-theme papirus-icon-theme picom plank-reloaded eww)
 XFCE_PKGS=(xfce4)
 # vulkan-loader-android conflicts with vulkan-loader-generic (pulled in by mesa); the generic loader
 # + freedreno ICD is the combination used here. Zink/Turnip is validated by gpu-probe.sh, not assumed.

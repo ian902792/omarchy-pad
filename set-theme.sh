@@ -37,6 +37,20 @@ if xdpyinfo >/dev/null 2>&1 && is_running bspwm; then
     sh "$HOME/.config/bspwm/bspwmrc" >/dev/null 2>&1 || warn "live reload of bspwmrc failed"
     info "live-reloaded bspwm colours, polybar, wallpaper"
 fi
+if pgrep -x picom >/dev/null 2>&1 && pgrep -x xfwm4 >/dev/null 2>&1; then
+    # Desktop session: reload everything that has a theme. Settings live on the session bus.
+    bus=$(tr '\0' '\n' < "/proc/$(pgrep -x xfwm4 | head -1)/environ" 2>/dev/null | sed -n 's/^DBUS_SESSION_BUS_ADDRESS=//p')
+    if [ -n "$bus" ]; then
+        export DBUS_SESSION_BUS_ADDRESS="$bus"
+        "$OMP_ROOT/scripts/gtk-settings.sh" >/dev/null 2>&1 || warn "gtk-settings failed"
+        "$OMP_ROOT/scripts/plank-setup.sh" >/dev/null 2>&1 && { pkill -x plank; sleep 0.5; plank >/dev/null 2>&1 & }
+        eww reload >/dev/null 2>&1 || warn "eww reload failed"
+        "$OMP_ROOT/scripts/eww-pin.sh" >/dev/null 2>&1
+    fi
+    "$OMP_ROOT/scripts/wallpaper.sh"
+    "$OMP_ROOT/scripts/polybar-launch.sh" mac
+    info "live-reloaded Desktop session (polybar, dock, widgets, wallpaper; open terminals keep old colours)"
+fi
 if pgrep -x xfce4-session >/dev/null 2>&1 && command -v dbus-launch >/dev/null 2>&1; then
     # XFCE settings live in its session bus; take the address from the running session
     bus=$(tr '\0' '\n' < "/proc/$(pgrep -x xfce4-session | head -1)/environ" 2>/dev/null | sed -n 's/^DBUS_SESSION_BUS_ADDRESS=//p')

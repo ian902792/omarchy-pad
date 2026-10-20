@@ -6,7 +6,7 @@ OMP_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 quiet=0; [ "${1:-}" = "--quiet" ] && quiet=1
 
 stopped=()
-for name in polybar sxhkd bspwm xfce4-session xfwm4 xfce4-panel xfdesktop Thunar; do
+for name in polybar sxhkd bspwm plank picom eww xfsettingsd xfce4-session xfwm4 xfce4-panel xfdesktop Thunar; do
     if pgrep -x "$name" >/dev/null 2>&1; then
         pkill -x "$name" 2>/dev/null && stopped+=("$name")
     fi

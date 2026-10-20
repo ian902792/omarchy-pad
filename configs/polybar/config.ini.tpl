@@ -85,6 +85,50 @@ time = %H:%M
 label = %date%  %time%
 label-foreground = ${colors.blue}
 
+; ---- macOS-style menu bar for the Desktop session (translucent; needs picom) ----
+[bar/mac]
+width = 100%
+height = @BAR_H@
+dpi = @DPI@
+background = @BG_A@
+foreground = ${colors.foreground}
+padding = 3
+module-margin = 2
+font-0 = Sans:weight=bold:size=11;3
+font-1 = Symbols Nerd Font:size=12;4
+modules-left = logo xwindow
+modules-center = mac-date
+modules-right = memory temp battery network
+enable-ipc = true
+cursor-click = pointer
+
+[module/logo]
+type = custom/text
+content = "  Apps  "
+content-foreground = ${colors.foreground}
+click-left = rofi -show drun
+
+[module/mac-date]
+type = internal/date
+interval = 5
+date = %a %b %d
+time = %H:%M
+label = %date%   %time%
+label-foreground = ${colors.foreground}
+
+[module/memory]
+type = internal/memory
+interval = 5
+format = <label>
+label = RAM %percentage_used%%
+label-foreground = ${colors.blue}
+
+[module/temp]
+type = custom/script
+exec = @SCRIPTS@/status-temp.sh
+interval = 10
+format-foreground = ${colors.mauve}
+
 [settings]
 screenchange-reload = true
 pseudo-transparency = false

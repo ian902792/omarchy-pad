@@ -12,7 +12,7 @@ require_termux_native
 
 DIRS=("$HOME/.shortcuts/tasks" "$HOME/.termux/widget/dynamic_shortcuts")
 # current names + names used by earlier versions (cleaned up on every run)
-NAMES=("Desktop Start" "Tiling Start" "Desktop Stop" "Theme Toggle")
+NAMES=("Desktop Start" "Tiling Start" "Classic XFCE Start" "Desktop Stop" "Theme Toggle")
 OLD_NAMES=("Omarchy Start" "Omarchy Stop" "XFCE Start" "Omarchy Theme Toggle")
 
 rm_all() { for d in "${DIRS[@]}"; do for n in "$@"; do rm -f "$d/$n"; done; done; }
@@ -30,8 +30,9 @@ mk() {  # mk "Name" "command"
     done
     info "shortcut: $1"
 }
-mk "Desktop Start" "exec bash \"$OMP_ROOT/start-xfce.sh\" >> \"\$HOME/.omarchy-pad/logs/session-xfce.out\" 2>&1"
-mk "Tiling Start"  "exec bash \"$OMP_ROOT/start-omarchy.sh\" >> \"\$HOME/.omarchy-pad/logs/session.out\" 2>&1"
+mk "Desktop Start"       "exec bash \"$OMP_ROOT/start-desktop.sh\" >> \"\$HOME/.omarchy-pad/logs/session-desktop.out\" 2>&1"
+mk "Tiling Start"        "exec bash \"$OMP_ROOT/start-omarchy.sh\" >> \"\$HOME/.omarchy-pad/logs/session.out\" 2>&1"
+mk "Classic XFCE Start"  "exec bash \"$OMP_ROOT/start-xfce.sh\" >> \"\$HOME/.omarchy-pad/logs/session-xfce.out\" 2>&1"
 mk "Desktop Stop"  "exec bash \"$OMP_ROOT/stop-omarchy.sh\""
 mk "Theme Toggle"  "exec bash \"$OMP_ROOT/set-theme.sh\" toggle"
 info "Next: open Termux:Widget -> CREATE SHORTCUTS, then long-press its icon (or add the Widget and tap REFRESH WIDGETS)."

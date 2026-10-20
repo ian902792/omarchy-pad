@@ -37,15 +37,14 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
 - Physical keyboard: Super works, but **Super+Return is taken by ColorOS**; Super+T opens a terminal.
 - Keys reach X only through Termux:X11's KeyInterceptor accessibility service. ColorOS sometimes turns it off;
   then Super dies AND the Android IME (LIME) eats keys and composes (cursor jumps back, wrong chars).
-  Re-enable: `adb shell settings put secure enabled_accessibility_services com.termux.x11/com.termux.x11.utils.KeyInterceptor`.
+  Fix: `./android-setup.sh` on the Mac (pad on USB).
   Termux itself can't read or write secure settings.
 - i3 config has no trailing comments on `bindsym` lines (they become part of the command).
 - Termux:Widget start: `start.sh` takes the wake lock first and `stop.sh --restart` keeps it; dropping it lets
   TermuxService stop and kill the new desktop. The X11 activity can't be raised from a widget (BAL_BLOCK).
 - Android's phantom process killer (max 32 child processes for all apps) killed the whole desktop incl. sshd
-  ("Trimming phantom processes" in logcat; every kitty window adds ~3 processes). Disabled via adb:
-  `device_config set_sync_disabled_for_tests persistent`, `device_config put activity_manager max_phantom_processes 2147483647`,
-  `settings put global settings_enable_monitor_phantom_procs false`. Re-check after a ColorOS update.
+  ("Trimming phantom processes" in logcat; every kitty window adds ~3 processes). Disabled by `./android-setup.sh`;
+  re-run it after a ColorOS update.
 - Termux in background cannot open Android activities (`termux-open-url` fails) — ColorOS policy.
 - Android only exposes `/proc/meminfo` and `thermal_zone0`; no battery/CPU/network stats.
 - Claude Code: linux-arm64 glibc build run via `bin/claude` (glibc ld.so, LD_PRELOAD dropped, restored for the Bash tool by a CLAUDE_CODE_SHELL wrapper so bash itself loads termux-exec and `#!/usr/bin/env` scripts run). No self-update; update with `install.sh`.

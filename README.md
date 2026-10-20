@@ -74,15 +74,17 @@ Termux 的 `LD_PRELOAD`（bionic 函式庫）無法載入 glibc 程序，所以�
 `CLAUDE_CODE_SHELL` 指向的小包裝，啟動 bash 前補回（bash 本身要載入它，`#!/usr/bin/env` 腳本才跑得動）。不用 `grun`：它會把 glibc 的 coreutils 放到 PATH 前面。
 自動更新已關閉（會覆蓋包裝）；更新 = 重跑 `install.sh`，或 `CLAUDE_VER=2.x.y bash install.sh` 指定版本。
 
-## Termux:X11 / Android 設定（install 時沒有自動做，已在本機手動設定過）
+## Android 端設定：`android-setup.sh`（在 Mac 上、平板插 USB 執行）
 
-- Termux:X11 偏好：`fullscreen:true hideCutout:true showAdditionalKbd:false dexMetaKeyCapture:true`（`termux-x11-preference`，X 執行中才能設）
-- 無障礙：`com.termux.x11/.utils.KeyInterceptor`（攔截 Super 等系統快捷鍵）
-- 電池：Termux、Termux:X11 設為「不限制」，否則背景會被殺
-- 子程序限制（Android 12+ 最多 32 個，超過就把整個桌面連 sshd 一起殺掉）已用 adb 關閉：
-  `adb shell device_config set_sync_disabled_for_tests persistent`、
-  `adb shell device_config put activity_manager max_phantom_processes 2147483647`、
-  `adb shell settings put global settings_enable_monitor_phantom_procs false`（系統更新後要再確認）
+這些設定在 Termux 之外，install.sh 碰不到。`./android-setup.sh` 逐項檢查並修正，列出修了什麼（`--check` 只檢查）：
+
+- 無障礙 `com.termux.x11/.utils.KeyInterceptor`：沒有它 Super 鍵失效，而且 Android 輸入法（LIME）會先吃掉按鍵、游標亂跳
+- 子程序限制（Android 12+ 全部 App 合計 32 個，超過就把整個桌面連 sshd 一起殺掉）：關閉
+- Doze 省電豁免：Termux、Termux:X11、Tailscale
+- Termux:X11 偏好：全螢幕、隱藏瀏海、Meta 鍵攔截、剪貼簿同步、縮放模式等
+
+**什麼時候跑**：ColorOS 更新後、重裝 App 後、Super 鍵又失效或桌面莫名被關掉時。
+adb 改不了、要在平板上手動確認的：電池「不限制」（Termux、Termux:X11、Tailscale），Tailscale 設為「永遠開啟的 VPN」。
 
 ## 已知限制
 

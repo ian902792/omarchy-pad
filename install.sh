@@ -65,7 +65,7 @@ rm -rf "$tmp"
 
 echo "==> ssh key for the Mac"
 [ -f ~/.ssh/id_ed25519 ] || ssh-keygen -t ed25519 -N '' -f ~/.ssh/id_ed25519 -C omarchy-pad
-echo "Add this to the Mac's ~/.ssh/authorized_keys:"
+echo "Add this key to the Mac's ~/.ssh/authorized_keys and to GitHub (Settings > SSH keys):"
 cat ~/.ssh/id_ed25519.pub
 mkdir -p ~/.config/omarchy-pad
 e=~/.config/omarchy-pad/env

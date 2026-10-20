@@ -27,7 +27,8 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
 ## Constraints (verified on this device — don't relearn them)
 
 - Hyprland/Wayland impossible (Termux:X11 is an X server). i3 only.
-- GL: llvmpipe only (`LIBGL_ALWAYS_SOFTWARE=1`). zink/Turnip renders terminals with garbage.
+- GL: zink (Turnip, Adreno 830) set in `start.sh`. kitty is clean on it and ~9x cheaper than llvmpipe;
+  alacritty rendered garbage on zink (reason it was replaced). llvmpipe fallback: `LIBGL_ALWAYS_SOFTWARE=1`.
 - termux-x11 needs `-noreset`, otherwise xrdb resources (Xft.dpi 240) vanish.
 - Physical keyboard: Super works, but **Super+Return is taken by ColorOS**; Super+T opens a terminal.
 - i3 config has no trailing comments on `bindsym` lines (they become part of the command).

@@ -10,7 +10,7 @@ OPPO Pad 4 Pro（ColorOS / Android 16）上的鍵盤導向開發桌面：**Termu
 | 部分 | 選擇 | 原因 |
 |---|---|---|
 | 視窗管理 | i3 + i3bar/i3status | 一個設定檔包含快捷鍵、配色、狀態列 |
-| 終端機 | kitty（llvmpipe 軟體 GL） | 支援背景圖：快捷鍵浮水印（`bin/omp-watermark` 產生，改快捷鍵後重跑）。zink（Adreno）畫面會壞，llvmpipe 清晰且夠快 |
+| 終端機 | kitty（zink：Adreno GPU） | 支援背景圖：快捷鍵浮水印（`bin/omp-watermark` 產生，改快捷鍵後重跑）。用 GPU 比軟體 GL（llvmpipe）省約 9 倍 CPU |
 | 啟動器 / 通知 | rofi / dunst | |
 | 字型 | JetBrainsMono Nerd Font | |
 | 縮放 | `Xft.dpi: 240`（2.5x，約 1357×960 邏輯解析度） | 315 ppi 面板用 2x 太小；GTK 用 `GDK_SCALE=2 GDK_DPI_SCALE=0.5` |

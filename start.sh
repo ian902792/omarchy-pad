@@ -3,8 +3,10 @@
 "$(dirname "$0")/stop.sh"
 export DISPLAY=:0 XDG_RUNTIME_DIR="$TMPDIR/runtime"
 mkdir -p -m 700 "$XDG_RUNTIME_DIR"
-# Software GL: zink (Turnip) drew alacritty with a garbage band; llvmpipe is crisp and fast enough.
-export LIBGL_ALWAYS_SOFTWARE=1
+# GPU GL via zink (Adreno 830 / Turnip). kitty renders cleanly on it and uses ~9x less CPU than llvmpipe
+# (300k-line test: 0.49s vs 4.25s). alacritty drew garbage on zink, which is why it was dropped.
+# Fallback if kitty ever fails to start: replace this line with  export LIBGL_ALWAYS_SOFTWARE=1
+export MESA_LOADER_DRIVER_OVERRIDE=zink GALLIUM_DRIVER=zink TU_DEBUG=noconform
 export GDK_SCALE=2 GDK_DPI_SCALE=0.5   # GTK: 2x widgets; text already scaled by Xft.dpi, undo the 2x
 # fcitx5 (自由大新): kitty only speaks IBus, which fcitx5 emulates; GTK uses its own module, others XIM
 export GLFW_IM_MODULE=ibus GTK_IM_MODULE=fcitx QT_IM_MODULE=fcitx XMODIFIERS=@im=fcitx

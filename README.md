@@ -32,16 +32,21 @@ Mac 端需要：系統設定開「遠端登入」、`brew install mosh`、第一
 
 ## 啟動 / 停止
 
-- Termux:Widget → **Desktop Start** / **Desktop Stop**
-- 或 `bash ~/omarchy-pad/start.sh`（會先停掉舊的 session）/ `stop.sh`
+- **長按 Termux:Widget 的 app 圖示** → **Desktop Start** / **Desktop Stop**（install 之後要開 Termux:Widget 按一次 CREATE SHORTCUTS 才會更新清單）
+- 或桌面上的 Termux:Widget 小工具（`~/.shortcuts/tasks/`，背景執行）
+- 或在 Termux 裡 `bash ~/omarchy-pad/start.sh`（會先停掉舊的 session）/ `stop.sh`
+- 桌面已在跑、只是切走了：直接點 **Termux:X11** app（或從多工切回去）即可，不用重新 Start
 
 ## 快捷鍵（Super）
+
+每個桌面預設是**分頁（tabbed）**：每個視窗一個分頁、各自全螢幕，上方是分頁列；Super+←/→ 切換分頁。
+要並排就在該桌面按 Super+S（再按一次回到分頁）。
 
 | 鍵 | 動作 |
 |---|---|
 | Super+Return | 終端機 |
 | Super+Space / Super+Tab | 應用程式啟動器 / 視窗切換 |
-| **Super+M** | mosh 到 Mac 並接上 herdr |
+| **Super+M** | 切到 herdr 分頁；還沒開就 mosh 到 Mac 開一個（只會有一條連線） |
 | Super+E | Thunar |
 | Super+W | 關閉視窗 |
 | Super+F / V / J / S | 全螢幕 / 浮動 / 切換分割方向 / 分頁版面 |

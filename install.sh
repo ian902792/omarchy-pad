@@ -34,9 +34,20 @@ ln -sf "$ROOT/config/Xresources" ~/.Xresources
 for f in "$ROOT"/bin/*; do ln -sf "$f" ~/.local/bin/; done
 grep -q 'omarchy-pad' ~/.bashrc 2>/dev/null || echo 'export PATH="$HOME/.local/bin:$PATH"  # omarchy-pad' >> ~/.bashrc
 
-# Termux:Widget one-tap entries
-ln -sf "$ROOT/start.sh" ~/.shortcuts/"Desktop Start"
-ln -sf "$ROOT/stop.sh" ~/.shortcuts/"Desktop Stop"
+# Termux:Widget entries (tasks/ = run in background, no terminal window). Old omarchy-pad entries removed.
+rm -f ~/.shortcuts/"Desktop Start" ~/.shortcuts/"Desktop Stop" \
+      ~/.shortcuts/tasks/{"Classic XFCE Start","Tiling Start","Theme Toggle","Desktop Start","Desktop Stop"}
+# Long-press menu of the Termux:Widget app icon = ~/.termux/widget/dynamic_shortcuts (needs a tap on
+# CREATE SHORTCUTS in the Termux:Widget app after changes).
+dyn=~/.termux/widget/dynamic_shortcuts
+rm -f "$dyn"/{"Classic XFCE Start","Tiling Start","Theme Toggle","Desktop Start","Desktop Stop"}
+mkdir -p ~/.shortcuts/tasks "$dyn"
+for n in start stop; do
+    f=~/.shortcuts/tasks/"Desktop ${n^}"
+    printf '#!/data/data/com.termux/files/usr/bin/bash\nexec bash "%s/%s.sh"\n' "$ROOT" "$n" > "$f"
+    chmod +x "$f"
+    cp "$f" "$dyn/"
+done
 
 echo "==> Claude Code ($CLAUDE_VER, linux-arm64 glibc build)"
 # No Android build exists; the glibc build runs through glibc-runner's loader (see bin/claude).

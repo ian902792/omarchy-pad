@@ -11,6 +11,8 @@ gaps inner 8
 gaps outer 0
 smart_gaps on
 focus_follows_mouse no
+# Every window is a full-screen tab; Super+S switches a workspace to side-by-side and back.
+workspace_layout tabbed
 
 #                       border  bg      text    indicator child_border
 client.focused          #7aa2f7 #7aa2f7 #1a1b26 #bb9af7   #7aa2f7
@@ -23,7 +25,8 @@ client.background       #1a1b26
 bindsym $mod+Return exec alacritty
 bindsym $mod+space exec rofi -show drun
 bindsym $mod+Tab exec rofi -show window
-bindsym $mod+m exec alacritty --title Mac -e omp-mac
+# Super+M: focus the herdr tab if it's open, otherwise open it (one mosh session, not one per press)
+bindsym $mod+m exec sh -c 'i3-msg -q "[instance=omp-mac] focus" || alacritty --class omp-mac --title Mac -e omp-mac'
 bindsym $mod+e exec thunar
 
 # --- windows ---

@@ -12,7 +12,7 @@ apt-get install -y -o Dpkg::Options::=--force-confold x11-repo glibc-repo
 apt-get update
 apt-get install -y -o Dpkg::Options::=--force-confold \
     termux-x11-nightly i3 i3status rofi dunst kitty python-pillow xorg-xrdb xorg-xsetroot dbus thunar \
-    openssh mosh git gh nodejs-lts neovim fzf ripgrep jq termux-api glibc-runner
+    openssh mosh git gh starship nodejs-lts neovim fzf ripgrep jq termux-api glibc-runner
 
 echo "==> font (JetBrainsMono Nerd Font)"
 fdir="$PREFIX/share/fonts/JetBrainsMonoNF"
@@ -33,7 +33,10 @@ done
 ln -sf "$ROOT/config/Xresources" ~/.Xresources
 for f in "$ROOT"/bin/*; do ln -sf "$f" ~/.local/bin/; done
 "$ROOT/bin/omp-watermark" >/dev/null   # key cheat sheet behind kitty text
-grep -q 'omarchy-pad' ~/.bashrc 2>/dev/null || echo 'export PATH="$HOME/.local/bin:$PATH"  # omarchy-pad' >> ~/.bashrc
+ln -sf "$ROOT/config/starship.toml" ~/.config/starship.toml
+# ~/.bashrc stays yours: drop the old one-line PATH hook, then source config/bashrc once
+sed -i '/# omarchy-pad$/d' ~/.bashrc 2>/dev/null || true
+grep -qs 'omarchy-pad/config/bashrc' ~/.bashrc || echo ". \"$ROOT/config/bashrc\"" >> ~/.bashrc
 
 # Termux:Widget entries (tasks/ = run in background, no terminal window). Old omarchy-pad entries removed.
 rm -f ~/.shortcuts/"Desktop Start" ~/.shortcuts/"Desktop Stop" \

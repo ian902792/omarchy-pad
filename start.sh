@@ -9,3 +9,6 @@ export GDK_SCALE=2 GDK_DPI_SCALE=0.5   # GTK: 2x widgets; text already scaled by
 nohup termux-x11 :0 -ac -noreset -xstartup "$HOME/.local/bin/omp-session" \
     >"$TMPDIR/omarchy-pad.log" 2>&1 &
 am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity >/dev/null 2>&1
+# Remote access while the desktop runs: sshd on 8022 (key-only), and a wake lock so Android keeps Termux alive.
+pgrep -x sshd >/dev/null || sshd
+termux-wake-lock

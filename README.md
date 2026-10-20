@@ -36,6 +36,12 @@ Mac 端需要：系統設定開「遠端登入」、`brew install mosh`、第一
 - 或桌面上的 Termux:Widget 小工具（`~/.shortcuts/tasks/`，背景執行）
 - 或在 Termux 裡 `bash ~/omarchy-pad/start.sh`（會先停掉舊的 session）/ `stop.sh`
 - 桌面已在跑、只是切走了：直接點 **Termux:X11** app（或從多工切回去）即可，不用重新 Start
+- Start 同時會啟動 sshd（port 8022，只收金鑰）並取得 wake lock，所以桌面開著時 Mac 可以 `ssh -p 8022 <pad 的 Tailscale IP>` 連進來；Stop 會放開 wake lock
+
+## 同步
+
+GitHub private repo `ian902792/omarchy-pad`。平板與 Mac 都是 clone，改完 `git commit && git push`，另一邊 `git pull`。
+給 Claude 的說明在 `CLAUDE.md`（檔案位置對照表、套用方式、已驗證的限制）。
 
 ## 快捷鍵（Super）
 

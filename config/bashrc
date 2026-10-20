@@ -1,0 +1,15 @@
+# omarchy-pad shell setup; sourced from ~/.bashrc (install.sh adds the line).
+export PATH="$HOME/.local/bin:$PATH"
+export EDITOR=nvim
+
+HISTSIZE=10000
+HISTFILESIZE=20000
+HISTCONTROL=ignoredups:erasedups
+shopt -s histappend checkwinsize
+
+alias ls='ls --color=auto'
+alias ll='ls -lah --color=auto'
+alias grep='grep --color=auto'
+alias g=git
+
+command -v starship >/dev/null && eval "$(starship init bash)"

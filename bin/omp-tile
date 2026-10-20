@@ -7,6 +7,7 @@
 #   omp-tile test     self-check of the layout logic, no i3 needed
 import json, os, signal, subprocess, sys, time
 
+SOCK = os.path.join(os.environ.get("TMPDIR", "/tmp"), "kitty-{}")   # listen_on in kitty.conf
 WATERMARK = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "config", "kitty", "watermark.png")
 TARGET = {2: "h[L,L]", 3: "h[L,v[L,L]]", 4: "h[v[L,L],v[L,L]]"}
 
@@ -43,16 +44,16 @@ def is_split(ws):
     return "t[" not in sig(ws) and leaves(ws)
 
 
-def plan(ids):
-    """i3 commands that arrange the windows ids (in order) into the TARGET shape."""
+def plan(ids, layout="splith"):
+    """i3 commands that arrange the windows ids (in order) into the TARGET shape, or all as tabs."""
     m = [f"_omp{i}" for i in range(len(ids))]
     cmds = [f"[con_id={c}] mark --add {m[i]}" for i, c in enumerate(ids)]
     # flatten: every window becomes a sibling of the first, in order
     cmds += [f"[con_id={ids[i]}] move window to mark {m[i - 1]}" for i in range(1, len(ids))]
-    cmds.append(f"[con_id={ids[0]}] layout splith")
-    if len(ids) == 3:   # 1 | 2/3
+    cmds.append(f"[con_id={ids[0]}] layout {layout}")
+    if layout == "splith" and len(ids) == 3:   # 1 | 2/3
         cmds += [f"[con_id={ids[1]}] split v", f"[con_id={ids[2]}] move window to mark {m[1]}"]
-    elif len(ids) == 4:   # 1 2 / 3 4
+    elif layout == "splith" and len(ids) == 4:   # 1 2 / 3 4
         cmds += [f"[con_id={ids[0]}] split v", f"[con_id={ids[2]}] move window to mark {m[0]}",
                  f"[con_id={ids[1]}] split v", f"[con_id={ids[3]}] move window to mark {m[1]}"]
     cmds += [f"[con_id={c}] unmark {m[i]}" for i, c in enumerate(ids)]
@@ -85,7 +86,7 @@ def watermark(ws, on):
         if (w.get("window_properties") or {}).get("class") != "kitty" or shown.get(w["window"]) == on:
             continue
         pid = kitty_pid(w["window"])
-        if pid and subprocess.run(["kitten", "@", "--to", f"unix:@kitty-{pid}", "set-background-image",
+        if pid and subprocess.run(["kitten", "@", "--to", "unix:" + SOCK.format(pid), "set-background-image",
                                    "--all", WATERMARK if on else "none"], capture_output=True).returncode == 0:
             shown[w["window"]] = on
 
@@ -116,10 +117,7 @@ def toggle():
     if not wins:
         return
     if is_split(ws):   # back to one tab per window
-        ids = [w["id"] for w in wins]
-        i3("; ".join(plan(ids)[:-len(ids)] + [f"[con_id={ids[0]}] layout tabbed"] +
-                     [f"[con_id={c}] unmark _omp{i}" for i, c in enumerate(ids)] +
-                     [f"[con_id={focused_id(ws)}] focus"]))
+        i3("; ".join(plan([w["id"] for w in wins], "tabbed") + [f"[con_id={focused_id(ws)}] focus"]))
     else:
         i3(f"[con_id={wins[0]['id']}] layout splith")   # refresh() then arranges it
     refresh()
@@ -152,6 +150,7 @@ def test():
     assert "[con_id=2] split v" in p3 and "[con_id=3] move window to mark _omp1" in p3
     p4 = plan([1, 2, 3, 4])
     assert p4.index("[con_id=1] split v") < p4.index("[con_id=3] move window to mark _omp0")
+    assert not any("split v" in c for c in plan([1, 2, 3, 4], "tabbed"))
     leaf = {"window": 1, "type": "con"}
     v = {"layout": "splitv", "nodes": [leaf, leaf]}
     assert sig({"layout": "splith", "nodes": [leaf, v]}) == TARGET[3]

@@ -112,7 +112,7 @@ bar {
 }
 
 exec --no-startup-id dunst
-# rebuild the cheat sheet from the #: lines on every start/reload
+# rebuild the cheat sheet from the #: lines on every start and Super+Shift+R (i3 restart; plain reload skips it)
 exec_always --no-startup-id omp-watermark
 exec --no-startup-id omp-ime
 exec --no-startup-id xsetroot -solid '#1a1b26'

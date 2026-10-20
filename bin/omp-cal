@@ -7,7 +7,8 @@ import calendar, datetime as dt, html, json, os, subprocess, sys, urllib.request
 
 CACHE = os.path.expanduser("~/.cache/omarchy-pad")
 TW_URL = "https://cdn.jsdelivr.net/gh/ruyut/TaiwanCalendar/data/{}.json"
-RED, YELLOW, CYAN, MUTED, FG, ACCENT = "#f7768e", "#e0af68", "#7dcfff", "#565f89", "#c0caf5", "#7aa2f7"
+RED, YELLOW, CYAN, GREEN = "#f7768e", "#e0af68", "#7dcfff", "#9ece6a"
+FG, MUTED, DIM, ACCENT, BG, BG_ALT = "#c0caf5", "#565f89", "#3b4261", "#7aa2f7", "#1a1b26", "#24283b"
 WEEK = "日一二三四五六"
 
 
@@ -43,55 +44,86 @@ def nyse(year):
     return out
 
 
-def status(d):
-    tw, us = taiwan(d.year) or {}, nyse(d.year)
-    t = "台灣放假" if tw.get(d, (d.weekday() >= 5,))[0] else "台灣上班"
-    u = "美股" + us[d] if d in us else "美股休市" if d.weekday() >= 5 else "美股開市"
-    return f"{t} · {u}"
+def wd(d):
+    return WEEK[(d.weekday() + 1) % 7]
+
+
+def span(text, **attrs):   # one Pango span; attrs never repeat, a repeated one breaks the whole markup
+    return "<span " + " ".join(f'{k}="{v}"' for k, v in attrs.items()) + f">{text}</span>"
+
+
+def pill(text, bg):
+    return span(f" {text} ", background=bg, color=BG, weight="bold")
+
+
+def today_line(today):
+    tw, us = taiwan(today.year) or {}, nyse(today.year)
+    off = tw.get(today, (today.weekday() >= 5, ""))[0]
+    closed = today.weekday() >= 5 or (today in us and us[today].startswith("休市"))
+    early = today in us and not closed
+    t = span("● 台灣放假" if off else "● 台灣上班", color=RED if off else GREEN)
+    u = span("● 美股休市" if closed else "● 美股提早收盤" if early else "● 美股開市",
+             color=RED if closed else YELLOW if early else GREEN)
+    return f'{span(f"今天 {today.month}/{today.day}（{wd(today)}）", color=FG, weight="bold")}   {t}   {u}'
+
+
+def upcoming(today):
+    """next Taiwan holiday or NYSE closure after today, as one line"""
+    for y in (today.year, today.year + 1):
+        tw, us = taiwan(y) or {}, nyse(y)
+        days = sorted(d for d in set(k for k in tw if tw[k][1]) | set(us) if d > today)
+        if days:
+            d = days[0]
+            what = tw[d][1] if d in tw and tw[d][1] else "美股" + us[d]
+            n = (d - today).days
+            return span(f"下一個：{d.month}/{d.day}（{wd(d)}）{html.escape(what)} · {n} 天後", color=MUTED)
+    return ""
 
 
 def render(year, month):
     tw = taiwan(year) or {}
     us = nyse(year)
     today = dt.date.today()
-    head = f'<span color="{ACCENT}"><b>{year} 年 {month} 月</b></span>'
-    grid = [head, " ".join(f'<span color="{MUTED}">{w}</span>' for w in WEEK)]
+    title = span(f"{month} 月", weight="bold", color=ACCENT) + " " + span(str(year), color=MUTED)
+    head = "".join(span(f" {w} ", color=RED if w == "日" else MUTED if w == "六" else FG, weight="bold") for w in WEEK)
+    grid = [head]
     for week in calendar.Calendar(firstweekday=6).monthdatescalendar(year, month):
         cells = []
         for d in week:
-            s = f"{d.day:2d}"
             hol, desc = tw.get(d, (d.weekday() >= 5, ""))
-            if d.month != month:
-                color = "#3b4261"
-            elif hol and desc:
-                color = RED
-            elif hol:
-                color = MUTED
-            elif d.weekday() >= 5:   # weekend that is a working day (補班)
-                color = CYAN
-            else:
-                color = FG
-            attrs = f'color="{color}"'
+            attrs = {"color": DIM if d.month != month else RED if hol and desc else MUTED if hol
+                     else CYAN if d.weekday() >= 5 else FG}   # weekday-colored weekend = 補班
             if d.month == month and d in us:
-                attrs += f' underline="single" underline_color="{YELLOW}"'
+                attrs.update(underline="double", underline_color=YELLOW)
+            if d.month == month and hol and desc:
+                attrs["weight"] = "bold"
             if d == today:
-                attrs += f' background="{ACCENT}" color="#1a1b26"'
-            cells.append(f"<span {attrs}>{s}</span>")
-        grid.append(" ".join(cells))
-    legend = (f'<span color="{RED}">紅</span> 台灣假日  <span color="{CYAN}">藍</span> 補班  '
-              f'<span color="{YELLOW}">底線</span> 美股休市／提早收盤')
-    note = "" if tw else f'\n<span color="{YELLOW}">{year} 年台灣行事曆還沒公布或下載失敗</span>'
-    msg = ("\n".join(grid) + "\n\n" + legend
-           + f"\n今天 {today.month}/{today.day}（{WEEK[(today.weekday() + 1) % 7]}）：{status(today)}" + note)
+                attrs.update(background=ACCENT, color=BG, weight="bold")
+            cells.append(span(f" {d.day:>2} ", **attrs))
+        grid.append("".join(cells))
+    rule = span("─" * 28, color=BG_ALT)
+    legend = "   ".join(span("●", color=c) + span(f" {t}", color=MUTED) for c, t in
+                       ((RED, "台灣假日"), (CYAN, "補班"), (YELLOW, "美股休市（雙底線）"), (ACCENT, "今天")))
+    lines = [title, "", "\n".join(grid), "", legend, rule,
+             today_line(today), upcoming(today)]
+    if not tw:
+        lines.append(span(f"{year} 年台灣行事曆還沒公布或下載失敗", color=YELLOW))
 
     rows = []
     for d in sorted(set(k for k in tw if k.month == month and tw[k][1]) | set(k for k in us if k.month == month)):
-        day = f"{d.month:2d}/{d.day:02d} {WEEK[(d.weekday() + 1) % 7]}"
+        n = (d - today).days
+        when = "今天" if n == 0 else f"{n} 天後" if n > 0 else "已過"
+        past = n < 0
+        date = span(f"{d.month:2d}/{d.day:02d} {wd(d)}", color=MUTED if past else FG)
+        items = []
         if d in tw and tw[d][1]:
-            rows.append(f'{day}  <span color="{RED}">台灣</span>  {html.escape(tw[d][1])}')
+            items.append((pill("台灣", MUTED if past else RED), tw[d][1]))
         if d in us:
-            rows.append(f'{day}  <span color="{YELLOW}">美股</span>  {html.escape(us[d])}')
-    return msg, rows or ["這個月沒有台灣假日或美股休市"]
+            items.append((pill("美股", MUTED if past else YELLOW), us[d]))
+        for tag, text in items:
+            rows.append(f'{date}  {tag}  {span(html.escape(text), color=MUTED if past else FG)}  {span(when, color=DIM if past else MUTED)}')
+    lines.append(" ")   # CJK fallback glyphs are taller than rofi measures: the last line was clipped
+    return "\n".join(lines), rows or [span("這個月沒有台灣假日或美股休市", color=MUTED)]
 
 
 def main():
@@ -100,10 +132,14 @@ def main():
     while True:
         msg, rows = render(year, month)
         r = subprocess.run(["rofi", "-dmenu", "-i", "-no-custom", "-markup-rows", "-dpi", os.environ.get("OMP_DPI", "180"),
-                            "-p", "← →  換月", "-mesg", msg,
+                            "-p", "󰃭", "-mesg", msg,
                             "-kb-move-char-back", "Control+b", "-kb-move-char-forward", "Control+f",
                             "-kb-custom-1", "Left", "-kb-custom-2", "Right",
-                            "-theme-str", "window { width: 64ch; } textbox { horizontal-align: 0.5; } listview { lines: 8; }"],
+                            # one quoted string per -theme-str: rofi's parser runs a quoted value on to the last quote
+                            "-theme-str", "window { width: 62ch; } textbox { horizontal-align: 0.5; } "
+                                          "listview { lines: %d; scrollbar: false; } " % min(len(rows), 8),
+                            "-theme-str", 'entry { placeholder: "搜尋假日   ← → 換月   Esc 關閉"; }',
+                            "-theme-str", 'message textbox { font: "JetBrainsMono Nerd Font 14"; }'],
                            input="\n".join(rows), capture_output=True, text=True)
         if r.returncode == 10:
             year, month = (year, month - 1) if month > 1 else (year - 1, 12)

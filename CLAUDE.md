@@ -61,6 +61,8 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
   Settings → Termux → 預設開啟 is switched from「在應用程式中開啟」to「在瀏覽器中開啟」. Then it works from the Termux app and from the X desktop.
 - Termux:API notifications never appeared and made no sound (Android 13+ notification permission / ColorOS
   channel defaults); `termux-notification` still exits 0. `termux-tts-speak` is heard (media volume).
+- rofi `-theme-str`: a quoted value runs on to the last `"` in the string, swallowing later rules; pass one
+  quoted value per `-theme-str`. Pango markup with a repeated attribute (two `color=`) blanks the whole message.
 - i3status dies on SIGUSR1 sent before it prints its first line (handler not set yet): omp-status waits for that.
 - Android only exposes `/proc/meminfo` and `thermal_zone0`; no CPU/network stats. Battery only via the Termux:API app
   (`termux-battery-status`, ~0.5 s): `bin/omp-status` wraps i3status and adds it, refreshed every 60 s.

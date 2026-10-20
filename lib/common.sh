@@ -52,6 +52,8 @@ load_env() {
     : "${OMP_THEME:=catppuccin}" "${OMP_MOD:=alt}" "${OMP_DPI:=192}" \
       "${OMP_GPU:=llvmpipe}" "${OMP_TERMINAL:=xfce4-terminal}"
     export OMP_ROOT OMP_THEME OMP_MOD OMP_DPI OMP_GPU OMP_TERMINAL
+    # Termux:Widget tasks start without SHELL; sxhkd needs it to run commands and exits otherwise.
+    export SHELL="${SHELL:-$PREFIX/bin/bash}"
 }
 
 # True only for fully installed packages (dpkg -s also succeeds for removed/half-configured ones).

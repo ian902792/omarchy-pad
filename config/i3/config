@@ -112,6 +112,8 @@ bar {
 }
 
 exec --no-startup-id dunst
+# Thunar sidebar: wider, no Network section (Thunar keeps these in xfconf, not in a file we can link)
+exec --no-startup-id sh -c 'xfconf-query -c thunar -p /last-separator-position -n -t int -s 240; xfconf-query -c thunar -p /hidden-bookmarks -n -a -t string -s network:///'
 # rebuild the cheat sheet from the #: lines on every start and Super+Shift+R (i3 restart; plain reload skips it)
 exec_always --no-startup-id omp-watermark
 exec --no-startup-id omp-ime

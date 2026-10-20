@@ -1,4 +1,5 @@
-/* Tokyo Night palette on top of Adwaita dark (Thunar, file dialogs). */
+/* Tokyo Night on top of Adwaita dark (Thunar, ristretto, file dialogs). Adwaita ignores most of the
+   @define-color names, so the polish section below sets the backgrounds directly. */
 @define-color theme_bg_color #1a1b26;
 @define-color theme_base_color #1a1b26;
 @define-color theme_fg_color #a9b1d6;
@@ -7,3 +8,25 @@
 @define-color theme_selected_fg_color #1a1b26;
 @define-color borders #414868;
 @define-color insensitive_fg_color #565f89;
+
+/* --- polish --- */
+@define-color theme_unfocused_bg_color #1a1b26;
+@define-color mantle #16161e;
+@define-color surface #24283b;
+@define-color sel #283457;
+window, .background { background-color: #1a1b26; }
+menubar, toolbar, .primary-toolbar, headerbar { background: @mantle; border-bottom: 1px solid #24283b; box-shadow: none; }
+toolbar { padding: 6px 8px; }
+toolbar button, headerbar button { border-radius: 8px; background: transparent; border: none; box-shadow: none; }
+toolbar button:hover { background: @surface; }
+entry { background: @surface; border: 1px solid #414868; border-radius: 8px; color: #c0caf5; box-shadow: none; }
+entry:focus { border-color: #7aa2f7; }
+.sidebar, placessidebar, placessidebar list, .sidebar .view, treeview.view.sidebar { background-color: @mantle; }
+placessidebar row { border-radius: 8px; margin: 1px 6px; }
+placessidebar row:selected, .sidebar .view:selected, .sidebar:selected { background-color: @sel; color: #c0caf5; }
+iconview, .view { background-color: #1a1b26; }
+iconview:selected, .view:selected, .view:selected:focus { background-color: @sel; color: #c0caf5; border-radius: 8px; }
+paned > separator { background: #24283b; min-width: 1px; }
+statusbar, .statusbar { color: #565f89; background: @mantle; }
+scrollbar, scrollbar trough { background: transparent; border: none; }
+scrollbar slider { background-color: #414868; border-radius: 99px; min-width: 6px; min-height: 6px; }

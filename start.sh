@@ -1,5 +1,8 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # Start Termux:X11 + i3. Safe to re-run (restarts the session).
+# Detach first: Termux:Widget kills the shortcut's whole process group when the script exits, which took the
+# X server down with it (nohup only covers SIGHUP). setsid gives everything below its own session.
+[ -n "$OMP_DETACHED" ] || OMP_DETACHED=1 exec setsid "$0" "$@"
 "$(dirname "$0")/stop.sh"
 . ~/.config/omarchy-pad/env 2>/dev/null
 # X renders at OMP_SCALE % of the native 3392x2400 and Termux:X11 upscales it. Every frame kitty draws is

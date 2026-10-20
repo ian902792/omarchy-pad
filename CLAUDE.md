@@ -33,6 +33,10 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
   as % of native via Termux:X11 `displayScale` (inverse: 133 = 75%), and DPI = 240*scale; restart the desktop after changing.
 - termux-x11 needs `-noreset`, otherwise xrdb resources (Xft.dpi 240) vanish.
 - Physical keyboard: Super works, but **Super+Return is taken by ColorOS**; Super+T opens a terminal.
+- Keys reach X only through Termux:X11's KeyInterceptor accessibility service. ColorOS sometimes turns it off;
+  then Super dies AND the Android IME (LIME) eats keys and composes (cursor jumps back, wrong chars).
+  Re-enable: `adb shell settings put secure enabled_accessibility_services com.termux.x11/com.termux.x11.utils.KeyInterceptor`.
+  Termux itself can't read or write secure settings.
 - i3 config has no trailing comments on `bindsym` lines (they become part of the command).
 - Termux:Widget start: `start.sh` takes the wake lock first and `stop.sh --restart` keeps it; dropping it lets
   TermuxService stop and kill the new desktop. The X11 activity can't be raised from a widget (BAL_BLOCK).

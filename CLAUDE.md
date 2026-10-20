@@ -55,7 +55,8 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
 - Android tags heap pointers (0xb400...), which overflow i3's con_id: i3bar workspace clicks failed with
   "Could not parse con id". `lib/omp-notag.c` (built by install.sh, preloaded by `omp-session`) turns tagging off.
   The `NATIVE_HEAP_POINTER_TAGGING` compat flag does not help: it only covers the app process, not what Termux execs.
-- Termux in background cannot open Android activities (`termux-open-url` fails) — ColorOS policy.
+- `termux-open-url` (`$BROWSER`, tapped URLs) silently does nothing (am still reports success) until Android
+  Settings → Termux → 預設開啟 is switched from「在應用程式中開啟」to「在瀏覽器中開啟」. Verified with Termux in the foreground.
 - Android only exposes `/proc/meminfo` and `thermal_zone0`; no CPU/network stats. Battery only via the Termux:API app
   (`termux-battery-status`, ~0.5 s): `bin/omp-status` wraps i3status and adds it, refreshed every 60 s.
 - Claude Code: linux-arm64 glibc build run via `bin/claude` (glibc ld.so, LD_PRELOAD dropped, restored for the Bash tool by a CLAUDE_CODE_SHELL wrapper so bash itself loads termux-exec and `#!/usr/bin/env` scripts run). No self-update; update with `install.sh`.

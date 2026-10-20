@@ -64,4 +64,4 @@ if [ "$bad" = 0 ]; then echo "All good."
 elif [ -n "$CHECK" ]; then echo "$bad wrong. Run without --check to fix."
 else echo "Fixed $changed of $bad. Restart the desktop (Desktop Start) if keyboard or X11 settings changed."; fi
 echo "Can't be set over adb (check by hand): battery 'Unrestricted' for Termux/Termux:X11/Tailscale in ColorOS,"
-echo "Tailscale as always-on VPN."
+echo "Tailscale as always-on VPN, Termux 預設開啟 = 在瀏覽器中開啟 (else links don't open)."

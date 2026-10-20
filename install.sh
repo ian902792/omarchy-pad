@@ -43,6 +43,10 @@ mkdir -p ~/.config/lazygit && ln -sf "$ROOT/config/lazygit/config.yml" ~/.config
 # ~/.bashrc stays yours: drop the old one-line PATH hook, then source config/bashrc once
 sed -i '/# omarchy-pad$/d' ~/.bashrc 2>/dev/null || true
 grep -qs 'omarchy-pad/config/bashrc' ~/.bashrc || echo ". \"$ROOT/config/bashrc\"" >> ~/.bashrc
+# tap a URL in Termux to open it
+mkdir -p ~/.termux
+grep -qs '^terminal-onclick-url-open' ~/.termux/termux.properties ||
+    { echo 'terminal-onclick-url-open=true' >> ~/.termux/termux.properties; termux-reload-settings; }
 
 # Termux:Widget entries (tasks/ = run in background, no terminal window). Old omarchy-pad entries removed.
 rm -f ~/.shortcuts/"Desktop Start" ~/.shortcuts/"Desktop Stop" \

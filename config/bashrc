@@ -1,6 +1,9 @@
 # omarchy-pad shell setup; sourced from ~/.bashrc (install.sh adds the line).
 export PATH="$HOME/.local/bin:$PATH"
 export EDITOR=nvim
+# Links open in the Android default browser; plain URLs (no OSC 8, which Termux lacks) so a tap opens them
+export BROWSER=termux-open-url
+export FORCE_HYPERLINK=0
 
 HISTSIZE=10000
 HISTFILESIZE=20000

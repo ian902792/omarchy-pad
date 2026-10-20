@@ -107,5 +107,5 @@ adb 改不了、要在平板上手動確認的：電池「不限制」（Termux�
 ## 已知限制
 
 - 狀態列：RAM、SoC 溫度、電池（電池要裝 Termux:API App，GitHub 版，跟 Termux 同簽章）。Android 不讓 Termux 讀網路、CPU 使用率。
-- Termux 在背景時 ColorOS 不准它開 Android app（`termux-open-url` 無效），所以沒有「開瀏覽器」快捷鍵；用 Android 的多工切換到 Chrome。
+- 開網址：Android 設定 → Termux → **預設開啟** 要從「在應用程式中開啟」改成「**在瀏覽器中開啟**」，否則 `termux-open-url` 和點網址都沒反應。改好後點 Termux／Claude Code 裡的網址會用 Android 預設瀏覽器開（`config/bashrc` 設了 `BROWSER=termux-open-url`、`FORCE_HYPERLINK=0`；install.sh 開啟 Termux 的點網址功能）。
 - Termux:X11 必須保留 `-noreset`：否則 xrdb 寫入的 DPI 會在 X server 重置時消失。

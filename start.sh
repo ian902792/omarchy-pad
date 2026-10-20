@@ -3,7 +3,8 @@
 # Detach first: Termux:Widget kills the shortcut's whole process group when the script exits, which took the
 # X server down with it (nohup only covers SIGHUP). setsid gives everything below its own session.
 [ -n "$OMP_DETACHED" ] || OMP_DETACHED=1 exec setsid "$0" "$@"
-"$(dirname "$0")/stop.sh"
+termux-wake-lock   # first: keeps TermuxService (and this script) alive when launched from Termux:Widget
+"$(dirname "$0")/stop.sh" --restart
 . ~/.config/omarchy-pad/env 2>/dev/null
 # X renders at OMP_SCALE % of the native 3392x2400 and Termux:X11 upscales it. Every frame kitty draws is
 # copied through the X server, so pixels = latency: per typed key the X server cost ~17ms at 100%,
@@ -29,6 +30,5 @@ am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity >/dev/null 2>&1
       sleep 1
   done ) &
 "$(dirname "$0")/bin/omp-watermark" >/dev/null 2>&1 &
-# Remote access while the desktop runs: sshd on 8022 (key-only), and a wake lock so Android keeps Termux alive.
+# Remote access while the desktop runs: sshd on 8022 (key-only); the wake lock above keeps Termux alive.
 pgrep -x sshd >/dev/null || sshd
-termux-wake-lock

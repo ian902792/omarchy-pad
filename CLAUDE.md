@@ -16,7 +16,7 @@ Synced via GitHub (`git@github.com:ian902792/omarchy-pad.git`, private). Copies:
 | `config/Xresources` | `~/.Xresources` | restart session (`start.sh`) |
 | `config/starship.toml`, `config/bashrc` | `~/.config/starship.toml`, sourced by `~/.bashrc` | new shell |
 | `bin/*` | `~/.local/bin/*` | immediate |
-| `config/kitty/watermark.png` | generated, gitignored | `omp-watermark` (keys list lives in `bin/omp-watermark`; keep it in sync with i3 bindings) |
+| `config/kitty/watermark.png` | generated, gitignored | `omp-watermark` (entries are the `#:` lines in `config/i3/config`) |
 
 Session: `start.sh` (restarts X11 + i3, starts sshd, wake lock) / `stop.sh`. `install.sh` is idempotent (packages, links, Claude Code).
 Termux:Widget entries: `~/.shortcuts/tasks/` and `~/.termux/widget/dynamic_shortcuts/` (written by install.sh).

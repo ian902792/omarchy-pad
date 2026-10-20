@@ -1,4 +1,6 @@
 # omarchy-pad i3 config — Omarchy-style keys on X11 (Termux:X11). Tokyo Night.
+# Lines starting with #: become the key cheat sheet behind kitty (bin/omp-watermark):
+#   "#: text" labels the bindsym below it; "#: Keys | text" is a free entry.
 # Super is the modifier. If ColorOS eats Super on your keyboard, change Mod4 -> Mod1 (Alt).
 set $mod Mod4
 
@@ -24,28 +26,42 @@ client.background       #1a1b26
 
 # --- apps ---
 # Super+Return never reaches X11 from a physical keyboard (ColorOS takes Meta+Enter)
+#: 新終端機分頁
 bindsym $mod+t exec kitty
+#: 啟動 App
 bindsym $mod+space exec rofi -show drun -dpi $OMP_DPI
+#: 切換視窗
 bindsym $mod+Tab exec rofi -show window -dpi $OMP_DPI
 # Super+M: focus the herdr tab if it's open, otherwise open it (one mosh session, not one per press)
+#: Mac / herdr 分頁
 bindsym $mod+m exec sh -c 'i3-msg -q "[instance=omp-mac] focus" || kitty --name omp-mac --title Mac omp-mac'
+#: 檔案
 bindsym $mod+e exec thunar
 # screenshot to Android Pictures/Screenshots
+#: 截圖（存到 圖片/Screenshots）
 bindsym $mod+Shift+s exec --no-startup-id omp-shot
 # 中/英 toggle, same as fcitx5's own Ctrl+Space (kept in case Android takes Ctrl+Space)
+#: Ctrl+Space / Super+I | 中 / 英（自由大新）
+#: Space / 1…0 | 選字（- = 翻頁）
 bindsym $mod+i exec --no-startup-id fcitx5-remote -t
 
 # --- windows ---
+#: 關閉
+#: Super+C / V | 複製 / 貼上（kitty；也能貼 Android 的文字）
 bindsym $mod+w kill
+#: 全螢幕
 bindsym $mod+f fullscreen toggle
 bindsym $mod+Shift+v floating toggle
 bindsym $mod+j split toggle
+#: 分頁 / 並排
 bindsym $mod+s layout toggle tabbed split
 
+#: Super+← → | 切換分頁
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
+#: Super+Shift+← → | 移動分頁
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
@@ -57,6 +73,7 @@ bindsym $mod+Shift+minus resize shrink height 10 ppt
 bindsym $mod+Shift+equal resize grow height 10 ppt
 
 # --- workspaces ---
+#: Super+1…6 | 切換桌面（+Shift 移過去）
 bindsym $mod+1 workspace number 1
 bindsym $mod+2 workspace number 2
 bindsym $mod+3 workspace number 3
@@ -72,6 +89,7 @@ bindsym $mod+Shift+6 move container to workspace number 6
 
 # --- session ---
 bindsym $mod+Shift+r restart
+#: 離開桌面
 bindsym $mod+Escape exec i3-nagbar -t warning -m 'Exit desktop?' -B 'Exit' 'i3-msg exit'
 
 bar {
@@ -94,6 +112,8 @@ bar {
 }
 
 exec --no-startup-id dunst
+# rebuild the cheat sheet from the #: lines on every start/reload
+exec_always --no-startup-id omp-watermark
 exec --no-startup-id omp-ime
 exec --no-startup-id xsetroot -solid '#1a1b26'
 # first terminal waits (max 3s) for fcitx5's IBus address file, else kitty starts without the input method

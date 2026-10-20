@@ -1,27 +1,34 @@
 #!/data/data/com.termux/files/usr/bin/python
 # Render the i3 key cheat sheet into config/kitty/watermark.png (kitty draws it centered behind the text).
-# Keep KEYS in sync with config/i3/config. Re-run after editing: omp-watermark
-import os
+# Entries come from "#:" lines in config/i3/config. Re-run after editing: omp-watermark
+import os, re
 from PIL import Image, ImageDraw, ImageFont
 
-KEYS = [
-    ("Super+M", "Mac / herdr 分頁"),
-    ("Super+T", "新終端機分頁"),
-    ("Super+Space", "啟動 App"),
-    ("Super+Tab", "切換視窗"),
-    ("Super+← →", "切換分頁"),
-    ("Super+Shift+← →", "移動分頁"),
-    ("Super+S", "分頁 / 並排"),
-    ("Super+F", "全螢幕"),
-    ("Super+W", "關閉"),
-    ("Super+C / V", "複製 / 貼上（也能貼 Android 的文字）"),
-    ("Super+1…6", "切換桌面（+Shift 移過去）"),
-    ("Super+E", "檔案"),
-    ("Super+Shift+S", "截圖（存到 圖片/Screenshots）"),
-    ("Ctrl+Space / Super+I", "中 / 英（自由大新）"),
-    ("Space / 1…0", "選字（- = 翻頁）"),
-    ("Super+Escape", "離開桌面"),
-]
+ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
+NAMES = {"$mod": "Super", "space": "Space", "Escape": "Escape", "Return": "Return",
+         "Left": "←", "Right": "→", "Up": "↑", "Down": "↓", "minus": "-", "equal": "="}
+
+def label(combo):   # "$mod+Shift+s" -> "Super+Shift+S"
+    return "+".join(NAMES.get(k, k.upper() if len(k) == 1 else k) for k in combo.split("+"))
+
+def keys(conf):
+    out, pending = [], None
+    for line in open(conf, encoding="utf-8"):
+        line = line.strip()
+        if line.startswith("#:"):
+            text = line[2:].strip()
+            if "|" in text:
+                k, d = (x.strip() for x in text.split("|", 1))
+                out.append((k, d))
+            else:
+                pending = text
+        elif pending and line.startswith("bindsym "):
+            combo = re.split(r"\s+", line)[1]
+            out.append((label(combo), pending))
+            pending = None
+    return out
+
+KEYS = keys(os.path.join(ROOT, "config", "i3", "config"))
 BG, KEY, DESC = "#1a1b26", "#454d70", "#363c58"   # faint on the Tokyo Night background
 S = int(os.environ.get("OMP_SCALE", "75")) / 100   # start.sh exports it; X runs at S x native
 SIZE = round(40 * S)   # 40 px at native resolution (~16 logical px)
@@ -40,6 +47,6 @@ for i, (k, d) in enumerate(KEYS):
     y = y0 + i * line
     draw.text((x0 + kw - mono.getlength(k), y), k, font=mono, fill=KEY)
     draw.text((x0 + kw + gap, y), d, font=cjk, fill=DESC)
-out = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "config", "kitty", "watermark.png")
+out = os.path.join(ROOT, "config", "kitty", "watermark.png")
 img.save(out)
 print(os.path.realpath(out))

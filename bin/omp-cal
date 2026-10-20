@@ -12,7 +12,7 @@ FG, MUTED, DIM, ACCENT, BG, BG_ALT = "#c0caf5", "#565f89", "#3b4261", "#7aa2f7",
 WEEK = "日一二三四五六"
 # The message box is sized by its theme font, so that is the big one (title, grid) and the notes under the grid
 # are made smaller with a span: text larger than the theme font got its last lines clipped.
-BIG, SMALL = "JetBrainsMono Nerd Font 17", "JetBrainsMono Nerd Font 10"
+BIG, SMALL = "JetBrainsMono Nerd Font 15", "JetBrainsMono Nerd Font 10"
 
 
 def taiwan(year):

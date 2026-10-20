@@ -53,7 +53,7 @@ elif grep -rlE '@[A-Z_0-9]+@' "$HOME/.config/bspwm" "$HOME/.config/sxhkd" "$HOME
 else
     r PASS "rendered configs" "theme=$OMP_THEME (static)"
 fi
-if rofi -no-config -config "$HOME/.config/rofi/config.rasi" -dump-config >/dev/null 2>&1 || rofi -config "$HOME/.config/rofi/config.rasi" -dump-config >/dev/null 2>&1; then
+if rofi -config "$HOME/.config/rofi/config.rasi" -dump-config >/dev/null 2>&1; then
     r PASS "rofi config parses" "rofi -dump-config ok"
 else
     r FAIL "rofi config parses" "rofi -dump-config failed"
@@ -94,16 +94,18 @@ if [ "$XUP" = 1 ] && pgrep -x polybar >/dev/null 2>&1; then
     fi
 fi
 
-launch_test() {  # launch_test name cmd... : start, expect process alive after 2s, kill
-    local name="$1" proc="$2"; shift 2
+launch_test() {  # launch_test name cmd... : start, expect THAT process alive after 2.5s, kill only it
+    local name="$1"; shift
     if [ "$XUP" = 0 ]; then r SKIP "$name" "X not running"; return; fi
     "$@" >/dev/null 2>&1 &
+    local pid=$!
     sleep 2.5
-    if pgrep -x "$proc" >/dev/null 2>&1; then r PASS "$name" "$proc started and stayed up 2.5s"; pkill -x "$proc"
-    else r FAIL "$name" "$proc did not start / exited"; fi
+    if kill -0 "$pid" 2>/dev/null; then r PASS "$name" "pid $pid started and stayed up 2.5s"; kill "$pid" 2>/dev/null
+    else r FAIL "$name" "process exited within 2.5s"; fi
+    wait "$pid" 2>/dev/null
 }
-launch_test "launcher (rofi)" rofi rofi -show drun
-launch_test "terminal (xfce4-terminal)" xfce4-terminal xfce4-terminal --disable-server -e "sleep 5"
+launch_test "launcher (rofi)" rofi -show drun
+launch_test "terminal (xfce4-terminal)" xfce4-terminal --disable-server -e "sleep 5"
 
 # --- 5. GPU -------------------------------------------------------------------
 if [ "$XUP" = 1 ] && command -v glxinfo >/dev/null 2>&1; then

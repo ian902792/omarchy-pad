@@ -39,8 +39,15 @@ if ! curl -fsS -m 10 -o /dev/null https://packages.termux.dev/apt/termux-main/di
     die "cannot reach packages.termux.dev. Keep Termux in the foreground (ColorOS blocks background network) and check Wi-Fi."
 fi
 
-step "2/7 package availability"
+step "2/7 backup"
+"$OMP_ROOT/backup.sh" pre-install
+
+step "3/7 package availability"
 export DEBIAN_FRONTEND=noninteractive
+# x11-repo carries bspwm/polybar/...; it must be enabled before the package lists are refreshed.
+if ! pkg_ok x11-repo; then
+    apt-get install -y -q x11-repo >>"$OMP_LOG_FILE" 2>&1 || die "could not install x11-repo (see $OMP_LOG_FILE)"
+fi
 apt-get update -q >>"$OMP_LOG_FILE" 2>&1 || die "apt-get update failed (see $OMP_LOG_FILE)"
 wanted=("${CORE_PKGS[@]}")
 [ "$want_xfce" = 1 ] && wanted+=("${XFCE_PKGS[@]}")
@@ -51,9 +58,6 @@ for p in "${wanted[@]}"; do
     if [ -z "$cand" ] || [ "$cand" = "(none)" ]; then missing+=("$p"); else info "available: $p $cand"; fi
 done
 [ "${#missing[@]}" -eq 0 ] || die "packages missing from Termux repos: ${missing[*]}"
-
-step "3/7 backup"
-"$OMP_ROOT/backup.sh" pre-install
 
 step "4/7 packages"
 mkdir -p "$OMP_STATE"
@@ -67,7 +71,7 @@ trap record_new EXIT
 install_group() {
     local name="$1"; shift
     local todo=()
-    for p in "$@"; do dpkg -s "$p" >/dev/null 2>&1 || todo+=("$p"); done
+    for p in "$@"; do pkg_ok "$p" || todo+=("$p"); done
     if [ "${#todo[@]}" -eq 0 ]; then info "$name: all installed"; return 0; fi
     info "$name: installing ${todo[*]}"
     apt-get install -y -q -o Dpkg::Options::=--force-confold "${todo[@]}" >>"$OMP_LOG_FILE" 2>&1 \

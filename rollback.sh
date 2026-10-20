@@ -21,6 +21,11 @@ done
 [ -n "$backup" ] || { [ -r "$OMP_BACKUP_DIR/ORIGINAL" ] && backup="$(cat "$OMP_BACKUP_DIR/ORIGINAL")"; }
 [ -n "$backup" ] && [ -d "$backup" ] || die "no backup found (run backup.sh first, or pass --backup DIR)"
 [ -r "$backup/absent.txt" ] || die "$backup is not a valid omarchy-pad backup"
+# Validate the restore payload BEFORE deleting anything.
+if [ ! -e "$backup/configs.tar.empty" ]; then
+    [ -r "$backup/configs.tar" ] && tar -tf "$backup/configs.tar" >/dev/null 2>&1 \
+        || die "backup payload ($backup/configs.tar) is missing or unreadable; nothing was changed"
+fi
 
 info "rolling back to $backup"
 "$OMP_ROOT/stop-omarchy.sh" || warn "stop-omarchy.sh reported a problem; continuing"

@@ -12,8 +12,12 @@ for name in polybar sxhkd bspwm xfce4-session xfwm4 xfce4-panel xfdesktop Thunar
     fi
 done
 sleep 0.5
-if pgrep -f 'termux-x11 com.termux.x11' >/dev/null 2>&1; then
-    pkill -f 'termux-x11 com.termux.x11' 2>/dev/null && stopped+=("termux-x11")
+X_PAT='termux-x11 com.termux.x11'
+if pgrep -f "$X_PAT" >/dev/null 2>&1; then
+    pkill -f "$X_PAT" 2>/dev/null && stopped+=("termux-x11")
+    # wait (max ~5s) for the server to really exit before its socket is removed / a new one starts
+    for _ in $(seq 1 25); do pgrep -f "$X_PAT" >/dev/null 2>&1 || break; sleep 0.2; done
+    pgrep -f "$X_PAT" >/dev/null 2>&1 && { pkill -9 -f "$X_PAT" 2>/dev/null; sleep 0.3; }
 fi
 command -v pulseaudio >/dev/null 2>&1 && pulseaudio --kill 2>/dev/null
 rm -f "${TMPDIR:-$PREFIX/tmp}/.X11-unix/X0" "${TMPDIR:-$PREFIX/tmp}/.X0-lock" 2>/dev/null

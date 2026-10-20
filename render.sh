@@ -25,9 +25,11 @@ THEME="$OMP_THEME"
 TOKENS=(BG MANTLE SURFACE SURFACE1 FG SUBTEXT MUTED BLUE MAUVE GREEN RED YELLOW PEACH TEAL PALETTE
         BAR_H CURSOR BORDER GAP MOD DPI TERMINAL SCRIPTS ROOT THEME)
 
+# Escape sed replacement metacharacters (\ & and the | delimiter) in values.
+esc() { printf '%s' "$1" | sed -e 's/[\\&|]/\\&/g'; }
 sedargs=()
 for t in "${TOKENS[@]}"; do
-    sedargs+=(-e "s|@${t}@|${!t}|g")
+    sedargs+=(-e "s|@${t}@|$(esc "${!t}")|g")
 done
 
 # template (relative to configs/)  ->  destination (relative to $HOME)  [mode]

@@ -54,15 +54,20 @@ load_env() {
     export OMP_ROOT OMP_THEME OMP_MOD OMP_DPI OMP_GPU OMP_TERMINAL
 }
 
+# True only for fully installed packages (dpkg -s also succeeds for removed/half-configured ones).
+pkg_ok() { [ "$(dpkg-query -W -f='${Status}' "$1" 2>/dev/null)" = "install ok installed" ]; }
+
 # GPU environment per mode. Default llvmpipe = stable software GL.
 # zink = Turnip (Adreno) via Vulkan; must be validated with gpu-probe.sh first.
 apply_gpu_env() {
     case "${OMP_GPU:-llvmpipe}" in
         zink)
+            unset LIBGL_ALWAYS_SOFTWARE
             export MESA_LOADER_DRIVER_OVERRIDE=zink GALLIUM_DRIVER=zink
             export TU_DEBUG=noconform ZINK_DESCRIPTORS=lazy MESA_VK_WSI_PRESENT_MODE=immediate
             ;;
         *)
+            unset MESA_LOADER_DRIVER_OVERRIDE TU_DEBUG ZINK_DESCRIPTORS MESA_VK_WSI_PRESENT_MODE
             export LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe
             ;;
     esac
@@ -76,8 +81,8 @@ start_audio() {
     command -v pulseaudio >/dev/null 2>&1 || return 0
     pulseaudio --check 2>/dev/null && return 0
     pulseaudio --start --exit-idle-time=-1 2>>"$OMP_LOG_FILE" || warn "pulseaudio failed to start (no sound)"
-    pactl load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1 >/dev/null 2>&1 || true
-    export PULSE_SERVER=127.0.0.1
+    # Native Termux apps use PulseAudio's unix socket. No TCP/anonymous listener is opened
+    # (it would be reachable by other apps on the device); only proot guests would need one.
 }
 
 # Start the Termux:X11 server on :0 and wait for its socket. Dies on failure.

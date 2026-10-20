@@ -53,8 +53,9 @@ bindsym $mod+w kill
 bindsym $mod+f fullscreen toggle
 bindsym $mod+Shift+v floating toggle
 bindsym $mod+j split toggle
-#: 分頁 / 並排
-bindsym $mod+s layout toggle tabbed split
+# Super+S: tabs <-> side by side; side by side is laid out by omp-tile (2: 1|2, 3: 1|2/3, 4: grid)
+#: 分頁 / 並排（3 個：左一右二，4 個：田字）
+bindsym $mod+s exec --no-startup-id omp-tile toggle
 
 #: Super+← → | 切換分頁
 bindsym $mod+Left focus left
@@ -112,6 +113,8 @@ bar {
 }
 
 exec --no-startup-id dunst
+# side-by-side layouts and watermark on/off (bin/omp-tile); restarts with i3
+exec_always --no-startup-id omp-tile daemon
 # Thunar sidebar: wider, no Network section (Thunar keeps these in xfconf, not in a file we can link)
 exec --no-startup-id sh -c 'xfconf-query -c thunar -p /last-separator-position -n -t int -s 240; xfconf-query -c thunar -p /hidden-bookmarks -n -a -t string -s network:///'
 # rebuild the cheat sheet from the #: lines on every start and Super+Shift+R (i3 restart; plain reload skips it)

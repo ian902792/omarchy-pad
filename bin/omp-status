@@ -30,7 +30,9 @@ for line in i3s.stdout:
     try:
         blocks = json.loads(line[len(prefix):])
     except ValueError:
-        print(line, end="", flush=True)   # header and the opening "["
+        blocks = None
+    if not isinstance(blocks, list):
+        print(line, end="", flush=True)   # header {"version":1} and the opening "["
         continue
     b = battery()
     if b:

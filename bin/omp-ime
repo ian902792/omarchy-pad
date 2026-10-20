@@ -1,0 +1,9 @@
+#!/data/data/com.termux/files/usr/bin/sh
+# Start fcitx5 (自由大新倉頡) with a working candidate window.
+# fcitx5 sees Termux as Android and starts in on-screen-keyboard mode, where classicui (the candidate
+# window) is never chosen. It switches back to physical-keyboard mode on the first real key press,
+# but only while some virtual keyboard owns org.fcitx.Fcitx5.VirtualKeyboard on D-Bus (fcitx5 5.1.23,
+# src/ui/virtualkeyboard). A dbus-test-tool black hole plays that owner and swallows its calls.
+pkill -f 'black-hole --session --name=org.fcitx.Fcitx5.VirtualKeyboard' 2>/dev/null
+dbus-test-tool black-hole --session --name=org.fcitx.Fcitx5.VirtualKeyboard &
+exec fcitx5 -r

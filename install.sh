@@ -67,6 +67,7 @@ cp "$ROOT/config/fcitx5/newcj.conf" "$fx/inputmethod/"
 # copies, not links: fcitx5 rewrites profile/config on exit
 pkill -x fcitx5 2>/dev/null || true
 cp "$ROOT/config/fcitx5/profile" "$ROOT/config/fcitx5/config" ~/.config/fcitx5/
+mkdir -p ~/.config/fcitx5/conf && cp "$ROOT/config/fcitx5/classicui.conf" ~/.config/fcitx5/conf/
 
 echo "==> Claude Code ($CLAUDE_VER, linux-arm64 glibc build)"
 # No Android build exists; the glibc build runs through glibc-runner's loader (see bin/claude).

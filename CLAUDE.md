@@ -34,6 +34,11 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
 - Termux in background cannot open Android activities (`termux-open-url` fails) — ColorOS policy.
 - Android only exposes `/proc/meminfo` and `thermal_zone0`; no battery/CPU/network stats.
 - Claude Code: linux-arm64 glibc build run via `bin/claude` (glibc ld.so, LD_PRELOAD dropped, restored for Bash via CLAUDE_ENV_FILE). No self-update; update with `install.sh`.
+- Chinese input = fcitx5 + 自由大新 table (`ime/newcj.cin`, built by install.sh into `~/.local/share/fcitx5/table/`).
+  Start it only via `bin/omp-ime`: fcitx5 treats Termux as Android (on-screen-keyboard mode) and never shows the
+  candidate window unless a fake `org.fcitx.Fcitx5.VirtualKeyboard` D-Bus owner exists. Do not mark classicui
+  `UIType=OnScreenKeyboard` (segfaults in updateVirtualKeyboardVisibility). Restarting fcitx5 breaks IBus in
+  already-open kitty windows (open a new one). Check state: `CurrentUI` on `org.fcitx.Fcitx5 /controller` should be `classicui`.
 - Tailscale MagicDNS names don't resolve in Termux; use IPs (Mac = `MAC=` in `~/.config/omarchy-pad/env`).
 
 ## Workflow

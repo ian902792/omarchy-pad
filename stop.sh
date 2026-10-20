@@ -1,5 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 pkill -x i3 2>/dev/null
+pkill -x fcitx5 2>/dev/null   # outlives its X server if X dies abruptly
+pkill -f 'black-hole --session --name=org.fcitx' 2>/dev/null
 pkill -f 'termux-x11 com.termux.x11' 2>/dev/null
 pkill -f com.termux.x11.Loader 2>/dev/null
 # Release the wake lock only on a real stop. start.sh passes --restart: when Termux was launched by

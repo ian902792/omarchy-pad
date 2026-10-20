@@ -4,6 +4,9 @@
 # X server down with it (nohup only covers SIGHUP). setsid gives everything below its own session.
 [ -n "$OMP_DETACHED" ] || OMP_DETACHED=1 exec setsid "$0" "$@"
 termux-wake-lock   # first: keeps TermuxService (and this script) alive when launched from Termux:Widget
+# Bring Termux:X11 up front now, while the widget tap still counts as a user action; ColorOS blocks
+# background activity starts a few seconds later.
+am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity >/dev/null 2>&1
 "$(dirname "$0")/stop.sh" --restart
 . ~/.config/omarchy-pad/env 2>/dev/null
 # X renders at OMP_SCALE % of the native 3392x2400 and Termux:X11 upscales it. Every frame kitty draws is

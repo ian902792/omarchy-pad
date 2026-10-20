@@ -51,7 +51,8 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
   "Could not parse con id". `lib/omp-notag.c` (built by install.sh, preloaded by `omp-session`) turns tagging off.
   The `NATIVE_HEAP_POINTER_TAGGING` compat flag does not help: it only covers the app process, not what Termux execs.
 - Termux in background cannot open Android activities (`termux-open-url` fails) — ColorOS policy.
-- Android only exposes `/proc/meminfo` and `thermal_zone0`; no battery/CPU/network stats.
+- Android only exposes `/proc/meminfo` and `thermal_zone0`; no CPU/network stats. Battery only via the Termux:API app
+  (`termux-battery-status`, ~0.5 s): `bin/omp-status` wraps i3status and adds it, refreshed every 60 s.
 - Claude Code: linux-arm64 glibc build run via `bin/claude` (glibc ld.so, LD_PRELOAD dropped, restored for the Bash tool by a CLAUDE_CODE_SHELL wrapper so bash itself loads termux-exec and `#!/usr/bin/env` scripts run). No self-update; update with `install.sh`.
 - Chinese input = fcitx5 + 自由大新 table (`ime/newcj.cin`, built by install.sh into `~/.local/share/fcitx5/table/`).
   Start it only via `bin/omp-ime`: fcitx5 treats Termux as Android (on-screen-keyboard mode) and never shows the

@@ -20,7 +20,7 @@ report() {   # name, current, wanted, fix command...
 
 "$ADB" get-state >/dev/null 2>&1 || { echo "No device: plug in the pad and allow USB debugging."; exit 1; }
 echo "Device: $(a getprop ro.product.model), Android $(a getprop ro.build.version.release)"
-for p in com.termux com.termux.x11 com.termux.widget; do
+for p in com.termux com.termux.x11 com.termux.widget com.termux.api; do
     a pm path "$p" | grep -q . || echo "  MISSING app $p (install from F-Droid / GitHub)"
 done
 

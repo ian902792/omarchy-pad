@@ -88,6 +88,6 @@ adb 改不了、要在平板上手動確認的：電池「不限制」（Termux�
 
 ## 已知限制
 
-- 狀態列只有 RAM 與 SoC 溫度：Android 不讓 Termux 讀電池、網路、CPU 使用率。
+- 狀態列：RAM、SoC 溫度、電池（電池要裝 Termux:API App，GitHub 版，跟 Termux 同簽章）。Android 不讓 Termux 讀網路、CPU 使用率。
 - Termux 在背景時 ColorOS 不准它開 Android app（`termux-open-url` 無效），所以沒有「開瀏覽器」快捷鍵；用 Android 的多工切換到 Chrome。
 - Termux:X11 必須保留 `-noreset`：否則 xrdb 寫入的 DPI 會在 X server 重置時消失。

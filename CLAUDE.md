@@ -20,7 +20,7 @@ Synced via GitHub (`git@github.com:ian902792/omarchy-pad.git`, private). Copies:
 | `config/gitconfig` | included from `~/.gitconfig` (delta pager) | immediate |
 | `config/lazygit/config.yml` | `~/.config/lazygit/config.yml` | next `lg` |
 | `bin/omp-status` (battery block, red < 25%; 中/英 of fcitx5; Mac reachable on :22, green/red) | i3bar `status_command` | `i3-msg restart` |
-| `bin/omp-claude-notify` (Android notification with sound + dunst when Claude waits; Stop only after turns > `OMP_NOTIFY_MIN`=20 s) | hooks in `~/.claude/settings.json`, merged by install.sh | next Claude turn |
+| `bin/omp-claude-notify` (spoken via `termux-tts-speak` + notification + dunst when Claude waits; Stop only after turns > `OMP_NOTIFY_MIN`=20 s) | hooks in `~/.claude/settings.json`, merged by install.sh | next Claude turn |
 | `bin/omp-tile` (side-by-side layouts; Super+S = `omp-tile toggle`) | daemon from i3 `exec_always` | `i3-msg restart`; `omp-tile test` = self-check |
 | `bin/omp-wallpaper` (feh, re-set on every RandR resize: displayScale lands after i3 starts, else 2x2 tiling) | i3 `exec_always` | `i3-msg restart` |
 | `bin/omp-keys` (key cheat sheet + system info: first entry of Super+Space, rofi combi; rows = `#:` lines in `config/i3/config`, Enter runs the binding) | rofi script mode | immediate |
@@ -58,6 +58,8 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
   The `NATIVE_HEAP_POINTER_TAGGING` compat flag does not help: it only covers the app process, not what Termux execs.
 - `termux-open-url` (`$BROWSER`, tapped URLs) silently does nothing (am still reports success) until Android
   Settings → Termux → 預設開啟 is switched from「在應用程式中開啟」to「在瀏覽器中開啟」. Then it works from the Termux app and from the X desktop.
+- Termux:API notifications never appeared and made no sound (Android 13+ notification permission / ColorOS
+  channel defaults); `termux-notification` still exits 0. `termux-tts-speak` is heard (media volume).
 - i3status dies on SIGUSR1 sent before it prints its first line (handler not set yet): omp-status waits for that.
 - Android only exposes `/proc/meminfo` and `thermal_zone0`; no CPU/network stats. Battery only via the Termux:API app
   (`termux-battery-status`, ~0.5 s): `bin/omp-status` wraps i3status and adds it, refreshed every 60 s.

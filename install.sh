@@ -47,7 +47,8 @@ grep -qs 'omarchy-pad/config/bashrc' ~/.bashrc || echo ". \"$ROOT/config/bashrc\
 mkdir -p ~/.termux
 grep -qs '^terminal-onclick-url-open' ~/.termux/termux.properties ||
     { echo 'terminal-onclick-url-open=true' >> ~/.termux/termux.properties; termux-reload-settings; }
-# Claude Code hooks: sound + notification when Claude waits for you (bin/omp-claude-notify); other hooks kept
+# Claude Code hooks: voice + notification when Claude waits for you (bin/omp-claude-notify); other hooks kept
+timeout 15 termux-notification-channel omp-claude Claude >/dev/null || true
 mkdir -p ~/.claude && f=~/.claude/settings.json && { [ -s "$f" ] || echo '{}' > "$f"; }
 jq --arg c "$HOME/.local/bin/omp-claude-notify" '
     def add($ev; $m; $cmd): .hooks[$ev] = ([.hooks[$ev][]? | select(any(.hooks[]; .command | contains("omp-claude-notify")) | not)]

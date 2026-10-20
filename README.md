@@ -17,7 +17,7 @@ OPPO Pad 4 Pro（ColorOS / Android 16）上的鍵盤導向開發桌面：**Termu
 | 遠端 | mosh → Mac（Tailscale IP）→ `herdr` | |
 | 桌布 | Omarchy Tokyo Night 的 `4-sunset-lake`（install.sh 下載到 `~/.local/share/omarchy-pad/wallpaper.jpg`，feh 設定） | 換桌布：覆蓋那個檔案後按 Super+Shift+R |
 | 狀態列 | i3status + `bin/omp-status`（電池，來自 Termux:API；中/英；Mac 連線） | 沒接電源、電量低於 25% 時電池顯示紅色；中/英 切換後 1 秒內更新；Mac 每 30 秒檢查 ssh port，連得到綠色、連不到紅色 |
-| Claude Code 通知 | `bin/omp-claude-notify`（Claude Code hooks，install.sh 寫入 `~/.claude/settings.json`） | Claude 要權限、問問題、或做完超過 20 秒的工作時：Android 通知＋提示音，桌面上另有 dunst 彈窗 |
+| Claude Code 通知 | `bin/omp-claude-notify`（Claude Code hooks，install.sh 寫入 `~/.claude/settings.json`） | Claude 要權限、問問題、或做完超過 20 秒的工作時：用語音念「Claude 完成了／需要你確認」（媒體音量；`OMP_NOTIFY_VOICE=0` 關閉），另有 Android 通知（要在設定允許 Termux:API 通知）與桌面 dunst 彈窗 |
 | Claude Code | linux-arm64 glibc 版，經 glibc-runner 的 loader 執行 | 沒有 Android 版；見 `bin/claude` |
 
 ## 安裝（在 Termux app 前景執行）

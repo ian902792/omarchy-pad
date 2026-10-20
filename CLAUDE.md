@@ -63,6 +63,8 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
   channel defaults); `termux-notification` still exits 0. `termux-tts-speak` is heard (media volume).
 - rofi `-theme-str`: a quoted value runs on to the last `"` in the string, swallowing later rules; pass one
   quoted value per `-theme-str`. Pango markup with a repeated attribute (two `color=`) blanks the whole message.
+  The message box (`-mesg`) takes its font from `textbox { font }` (not `message textbox`) and is sized by it:
+  spans larger than that font get clipped, smaller ones are fine — so set the big font there and shrink with spans.
 - i3status dies on SIGUSR1 sent before it prints its first line (handler not set yet): omp-status waits for that.
 - Android only exposes `/proc/meminfo` and `thermal_zone0`; no CPU/network stats. Battery only via the Termux:API app
   (`termux-battery-status`, ~0.5 s): `bin/omp-status` wraps i3status and adds it, refreshed every 60 s.

@@ -10,6 +10,9 @@ TW_URL = "https://cdn.jsdelivr.net/gh/ruyut/TaiwanCalendar/data/{}.json"
 RED, YELLOW, CYAN, GREEN = "#f7768e", "#e0af68", "#7dcfff", "#9ece6a"
 FG, MUTED, DIM, ACCENT, BG, BG_ALT = "#c0caf5", "#565f89", "#3b4261", "#7aa2f7", "#1a1b26", "#24283b"
 WEEK = "日一二三四五六"
+# The message box is sized by its theme font, so that is the big one (title, grid) and the notes under the grid
+# are made smaller with a span: text larger than the theme font got its last lines clipped.
+BIG, SMALL = "JetBrainsMono Nerd Font 17", "JetBrainsMono Nerd Font 10"
 
 
 def taiwan(year):
@@ -104,10 +107,9 @@ def render(year, month):
     rule = span("─" * 28, color=BG_ALT)
     legend = "   ".join(span("●", color=c) + span(f" {t}", color=MUTED) for c, t in
                        ((RED, "台灣假日"), (CYAN, "補班"), (YELLOW, "美股休市（雙底線）"), (ACCENT, "今天")))
-    lines = [title, "", "\n".join(grid), "", legend, rule,
-             today_line(today), upcoming(today)]
+    lines = [title, "", "\n".join(grid), "", span("\n".join([legend, rule, today_line(today), upcoming(today)]), font=SMALL)]
     if not tw:
-        lines.append(span(f"{year} 年台灣行事曆還沒公布或下載失敗", color=YELLOW))
+        lines.append(span(f"{year} 年台灣行事曆還沒公布或下載失敗", color=YELLOW, font=SMALL))
 
     rows = []
     for d in sorted(set(k for k in tw if k.month == month and tw[k][1]) | set(k for k in us if k.month == month)):
@@ -122,7 +124,6 @@ def render(year, month):
             items.append((pill("美股", MUTED if past else YELLOW), us[d]))
         for tag, text in items:
             rows.append(f'{date}  {tag}  {span(html.escape(text), color=MUTED if past else FG)}  {span(when, color=DIM if past else MUTED)}')
-    lines.append(" ")   # CJK fallback glyphs are taller than rofi measures: the last line was clipped
     return "\n".join(lines), rows or [span("這個月沒有台灣假日或美股休市", color=MUTED)]
 
 
@@ -139,7 +140,8 @@ def main():
                             "-theme-str", "window { width: 62ch; } textbox { horizontal-align: 0.5; } "
                                           "listview { lines: %d; scrollbar: false; } " % min(len(rows), 8),
                             "-theme-str", 'entry { placeholder: "搜尋假日   ← → 換月   Esc 關閉"; }',
-                            "-theme-str", 'message textbox { font: "JetBrainsMono Nerd Font 14"; }'],
+                            "-theme-str", f'textbox {{ font: "{BIG}"; }}',
+                            "-theme-str", f'element-text {{ font: "{SMALL}"; }}'],
                            input="\n".join(rows), capture_output=True, text=True)
         if r.returncode == 10:
             year, month = (year, month - 1) if month > 1 else (year - 1, 12)

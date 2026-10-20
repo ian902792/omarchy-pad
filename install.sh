@@ -11,7 +11,7 @@ apt-get update
 apt-get install -y -o Dpkg::Options::=--force-confold x11-repo glibc-repo
 apt-get update
 apt-get install -y -o Dpkg::Options::=--force-confold \
-    termux-x11-nightly i3 i3status rofi dunst kitty python-pillow xorg-xrdb xorg-xsetroot xorg-xkbcomp dbus thunar \
+    termux-x11-nightly i3 i3status rofi dunst kitty python-pillow fcitx5 fcitx5-chinese-addons fcitx5-gtk3 libime xorg-xrdb xorg-xsetroot xorg-xkbcomp dbus thunar \
     openssh mosh git gh starship nodejs-lts neovim fzf ripgrep jq termux-api glibc-runner
 
 echo "==> font (JetBrainsMono Nerd Font)"
@@ -52,6 +52,21 @@ for n in start stop; do
     chmod +x "$f"
     cp "$f" "$dyn/"
 done
+
+echo "==> Chinese input: fcitx5 + 自由大新倉頡 (ime/newcj.cin -> fcitx5 table)"
+fx=~/.local/share/fcitx5
+mkdir -p "$fx/table" "$fx/inputmethod" ~/.config/fcitx5
+tmp=$(mktemp -d)
+{ printf "KeyCode=abcdefghijklmnopqrstuvwxyz,.;'[]?\nLength=5\n[Data]\n"
+  # NF==2 drops the one cin entry whose value contains spaces
+  awk '/^%chardef begin/{on=1;next} /^%chardef end/{on=0} on && !/^#/ && NF==2 {print $1, $2}' "$ROOT/ime/newcj.cin"
+} > "$tmp/newcj.txt"
+libime_tabledict "$tmp/newcj.txt" "$fx/table/newcj.main.dict"
+rm -rf "$tmp"
+cp "$ROOT/config/fcitx5/newcj.conf" "$fx/inputmethod/"
+# copies, not links: fcitx5 rewrites profile/config on exit
+pkill -x fcitx5 2>/dev/null || true
+cp "$ROOT/config/fcitx5/profile" "$ROOT/config/fcitx5/config" ~/.config/fcitx5/
 
 echo "==> Claude Code ($CLAUDE_VER, linux-arm64 glibc build)"
 # No Android build exists; the glibc build runs through glibc-runner's loader (see bin/claude).

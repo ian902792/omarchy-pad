@@ -77,7 +77,7 @@ install.sh 會裝好並設定（設定在 `config/bashrc`、`config/gitconfig`�
 | `lg`（lazygit） | 選單式 git：看改動、分段 commit、切 branch、push | 方向鍵選、空白鍵 stage、`c` commit、`P` push、`?` 說明、`q` 離開 |
 | `ls` / `ll` / `tree`（eza） | 有顏色和圖示的 ls；`ll` 會顯示 git 狀態 | `ll`、`tree -L 2` |
 | `cat`（bat） | 有語法高亮的 cat；要行號和捲動用 `bat 檔名` | `bat install.sh` |
-| `z`（zoxide） | 跳到常去的資料夾，只要打一部分名稱 | `z omarchy`、`zi`（用選單挑） |
+| `z`（zoxide） | 跳到常去的資料夾，只要打一部分名稱（只記得你 cd 進去過的資料夾） | `z omarchy`、`zi`（用選單挑） |
 | `fd` | 找檔案，比 find 快、語法簡單 | `fd watermark`、`fd -e sh` |
 | `git diff`（delta） | diff 有語法高亮和行號；`n` / `N` 跳到下一個 / 上一個檔案 | `git diff`、`git show` |
 | `uv` | Python 版本、套件、虛擬環境 | `uv venv`、`uv pip install x`、`uv run script.py` |

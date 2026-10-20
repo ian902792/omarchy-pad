@@ -6,6 +6,6 @@ gui:
     inactiveBorderColor: ["#414868"]
     selectedLineBgColor: ["#283457"]
 git:
-  paging:
-    colorArg: always
-    pager: delta --paging=never --syntax-theme=base16
+  diffRenderers:
+    - colorArg: always
+      command: delta --paging=never --syntax-theme=base16

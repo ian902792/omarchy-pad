@@ -1,4 +1,4 @@
-# Tokyo Night prompt:  ~/omarchy-pad   main !1 ?2   took 3s
+# Tokyo Night prompt:  ~/GitHub/omarchy-pad   main !1 ?2   took 3s
 #                     ❯
 add_newline = true
 format = "$directory$git_branch$git_status$nodejs$python$cmd_duration$line_break$character"

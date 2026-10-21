@@ -23,8 +23,8 @@ OPPO Pad 4 Pro（ColorOS / Android 16）上的鍵盤導向開發桌面：**Termu
 ## 安裝（在 Termux app 前景執行）
 
 ```sh
-git clone <this repo> ~/omarchy-pad   # 或從 Mac 複製
-bash ~/omarchy-pad/install.sh         # 可重複執行；也用來更新 Claude Code
+git clone <this repo> ~/GitHub/omarchy-pad   # 或從 Mac 複製
+bash ~/GitHub/omarchy-pad/install.sh         # 可重複執行；也用來更新 Claude Code
 ```
 
 install.sh 會：裝套件 → 字型 → 把 `config/*` symlink 到 `~/.config/`（原有的改名 `*.bak.<時間>`）→ `bin/*` 連到 `~/.local/bin` →
@@ -37,7 +37,7 @@ Mac 端需要：系統設定開「遠端登入」、`brew install mosh`、第一
 
 - **長按 Termux:Widget 的 app 圖示** → **Desktop Start**，約 3 秒後**點 Termux:X11 圖示**進入桌面（ColorOS 不准 Widget 自動把它叫到前景）；**Desktop Stop** 關閉。install 之後要開 Termux:Widget 按一次 CREATE SHORTCUTS 才會更新清單
 - 或桌面上的 Termux:Widget 小工具（`~/.shortcuts/tasks/`，背景執行）
-- 或在 Termux 裡 `bash ~/omarchy-pad/start.sh`（會先停掉舊的 session）/ `stop.sh`
+- 或在 Termux 裡 `bash ~/GitHub/omarchy-pad/start.sh`（會先停掉舊的 session）/ `stop.sh`
 - 桌面已在跑、只是切走了：直接點 **Termux:X11** app（或從多工切回去）即可，不用重新 Start
 - Start 同時會啟動 sshd（port 8022，只收金鑰）並取得 wake lock，所以桌面開著時 Mac 可以 `ssh -p 8022 <pad 的 Tailscale IP>` 連進來；Stop 會放開 wake lock
 

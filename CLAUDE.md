@@ -2,7 +2,7 @@
 
 Keyboard-first i3 desktop for an OPPO Pad 4 Pro (ColorOS / Android 16) on **Termux native + Termux:X11**.
 Synced via GitHub (`git@github.com:ian902792/omarchy-pad.git`, private). Copies:
-- tablet: `/data/data/com.termux/files/home/omarchy-pad` (= `~/omarchy-pad` in Termux)
+- tablet: `/data/data/com.termux/files/home/GitHub/omarchy-pad` (= `~/GitHub/omarchy-pad` in Termux)
 - Mac: `/Users/ianyu/GitHub/omarchy-pad`
 
 ## Where things live (tablet)

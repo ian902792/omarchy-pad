@@ -50,14 +50,17 @@ grep -qs 'omarchy-pad/config/bashrc' ~/.bashrc || echo ". \"$ROOT/config/bashrc\
 mkdir -p ~/.termux
 grep -qs '^terminal-onclick-url-open' ~/.termux/termux.properties ||
     { echo 'terminal-onclick-url-open=true' >> ~/.termux/termux.properties; termux-reload-settings; }
-# Claude Code hooks: voice + notification when Claude waits for you (bin/omp-claude-notify); other hooks kept
+# Claude Code hooks: voice + notification when Claude waits for you (bin/omp-claude-notify); other hooks kept.
+# Status line = the Mac's (config/claude/statusline.py: model, prompts, context, rate limits, cost).
 timeout 15 termux-notification-channel omp-claude Claude >/dev/null || true
 mkdir -p ~/.claude && f=~/.claude/settings.json && { [ -s "$f" ] || echo '{}' > "$f"; }
 jq --arg c "$HOME/.local/bin/omp-claude-notify" '
     def add($ev; $m; $cmd): .hooks[$ev] = ([.hooks[$ev][]? | select(any(.hooks[]; .command | contains("omp-claude-notify")) | not)]
         + [{matcher: $m, hooks: [{type: "command", command: $cmd, async: true}]}]);
     add("UserPromptSubmit"; ""; $c + " start") | add("Stop"; ""; $c)
-    | add("Notification"; "permission_prompt|elicitation_dialog"; $c)' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+    | add("Notification"; "permission_prompt|elicitation_dialog"; $c)
+    | .statusLine = {type: "command", command: $sl}' \
+    --arg sl "$PREFIX/bin/python3 $ROOT/config/claude/statusline.py" "$f" > "$f.tmp" && mv "$f.tmp" "$f"
 
 # Termux:Widget entries (tasks/ = run in background, no terminal window). Old omarchy-pad entries removed.
 rm -f ~/.shortcuts/"Desktop Start" ~/.shortcuts/"Desktop Stop" \

@@ -22,6 +22,7 @@ Synced via GitHub (`git@github.com:ian902792/omarchy-pad.git`, private). Copies:
 | `bin/omp-status` (battery block, red < 25%; 中/英 of fcitx5; Mac reachable on :22, green/red) | i3bar `status_command` | `i3-msg restart` |
 | `bin/omp-cal` (launcher entry Calendar: month grid, ←/→ months; Taiwan holidays from ruyut/TaiwanCalendar JSON cached in `~/.cache/omarchy-pad`; NYSE closures from pip `holidays` + early-close rule) | rofi | immediate |
 | `bin/omp-claude-notify` (spoken via `termux-tts-speak` + notification + dunst when Claude waits; Stop only after turns > `OMP_NOTIFY_MIN`=20 s) | hooks in `~/.claude/settings.json`, merged by install.sh | next Claude turn |
+| `config/claude/statusline.py` (Claude Code status line, same as the Mac's: model, prompt count, context, rate limits, cost) | `statusLine` in `~/.claude/settings.json`, set by install.sh | next status refresh |
 | `bin/omp-tile` (side-by-side layouts; Super+S = `omp-tile toggle`) | daemon from i3 `exec_always` | `i3-msg restart`; `omp-tile test` = self-check |
 | `bin/omp-wallpaper` (feh, re-set on every RandR resize: displayScale lands after i3 starts, else 2x2 tiling) | i3 `exec_always` | `i3-msg restart` |
 | `bin/omp-keys` (key cheat sheet + system info: first entry of Super+Space, rofi combi; rows = `#:` lines in `config/i3/config`, Enter runs the binding) | rofi script mode | immediate |

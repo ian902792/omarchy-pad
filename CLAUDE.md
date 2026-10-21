@@ -19,7 +19,7 @@ Synced via GitHub (`git@github.com:ian902792/omarchy-pad.git`). Copies:
 | `config/starship.toml`, `config/bashrc` | `~/.config/starship.toml`, sourced by `~/.bashrc` | new shell |
 | `config/gitconfig` | included from `~/.gitconfig` (delta pager) | immediate |
 | `config/lazygit/config.yml` | `~/.config/lazygit/config.yml` | next `lg` |
-| `bin/omp-status` (battery block, red < 25%; 中/英 of fcitx5; Mac reachable on :22, green/red) | i3bar `status_command` | `i3-msg restart` |
+| `bin/omp-status` (battery block: red < 25%, orange < 40%, else green; 中/英 of fcitx5; Mac reachable on :22, green/red) | i3bar `status_command` | `i3-msg restart` |
 | `bin/omp-cal` (launcher entry Calendar: month grid, ←/→ months; Taiwan holidays from ruyut/TaiwanCalendar JSON cached in `~/.cache/omarchy-pad`; NYSE closures from pip `holidays` + early-close rule) | rofi | immediate |
 | `bin/omp-claude-notify` (spoken via `termux-tts-speak` + notification + dunst when Claude waits; Stop only after turns > `OMP_NOTIFY_MIN`=20 s) | hooks in `~/.claude/settings.json`, merged by install.sh | next Claude turn |
 | `config/claude/statusline.py` (Claude Code status line, same as the Mac's: model, prompt count, context, rate limits, cost) | `statusLine` in `~/.claude/settings.json`, set by install.sh | next status refresh |

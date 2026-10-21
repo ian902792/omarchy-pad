@@ -15,10 +15,8 @@ def battery():
         try:
             b = json.loads(subprocess.run(["termux-battery-status"], capture_output=True, text=True, timeout=10).stdout)
             pct, plugged = b["percentage"], b["plugged"] != "UNPLUGGED"
-            block = {"name": "battery", "full_text": f"{'󰂄' if plugged else ICONS[round(pct / 10)]} {pct}%"}
-            if not plugged and pct < 25:
-                block["color"] = "#f7768e"   # low battery: red
-            cache = block
+            cache = {"name": "battery", "full_text": f"{'󰂄' if plugged else ICONS[round(pct / 10)]} {pct}%",
+                     "color": "#f7768e" if pct < 25 else "#ff9e64" if pct < 40 else "#9ece6a"}   # red / orange / green
         except (OSError, ValueError, KeyError, subprocess.TimeoutExpired):
             pass   # Termux:API app missing or slow: keep the last value
     return cache

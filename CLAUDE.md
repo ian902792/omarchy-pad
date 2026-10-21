@@ -25,6 +25,7 @@ Synced via GitHub (`git@github.com:ian902792/omarchy-pad.git`, private). Copies:
 | `bin/omp-tile` (side-by-side layouts; Super+S = `omp-tile toggle`) | daemon from i3 `exec_always` | `i3-msg restart`; `omp-tile test` = self-check |
 | `bin/omp-wallpaper` (feh, re-set on every RandR resize: displayScale lands after i3 starts, else 2x2 tiling) | i3 `exec_always` | `i3-msg restart` |
 | `bin/omp-keys` (key cheat sheet + system info: first entry of Super+Space, rofi combi; rows = `#:` lines in `config/i3/config`, Enter runs the binding) | rofi script mode | immediate |
+| `bin/omp-speak` (`\` / Ctrl+`\`: toggles Speak Only voice input via `am broadcast` when it is the active Android IME, else types the key with xdotool from the empty `speakonly-pass` mode; Termux:X11's KeyInterceptor hides keys from IMEs) | i3 `bindsym` | immediate |
 | `bin/*` | `~/.local/bin/*` | immediate |
 
 Session: `start.sh` (restarts X11 + i3, starts sshd, wake lock) / `stop.sh` (also Super+Escape and the launcher's Shut Down Desktop, via `omp-keys shutdown`). `install.sh` is idempotent (packages, links, Claude Code).

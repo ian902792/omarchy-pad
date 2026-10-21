@@ -1,0 +1,9 @@
+#!/data/data/com.termux/files/usr/bin/sh
+# i3 binds \ (and Ctrl+\ = translate) here: toggle Speak Only voice input when it is the active Android IME,
+# otherwise type the key as usual. The empty i3 mode releases i3's grab so xdotool's key isn't caught again.
+key=backslash; extra=
+[ "$1" = translate ] && key=ctrl+backslash && extra="--es mode translate"
+/system/bin/am broadcast --user 0 -a app.speakonly.ime.TOGGLE -p app.speakonly.ime $extra 2>/dev/null | grep -q 'result=1' && exit 0
+i3-msg -q mode speakonly-pass
+xdotool key $key
+i3-msg -q mode default

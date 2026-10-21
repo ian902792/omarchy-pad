@@ -1,7 +1,7 @@
 # omarchy-pad — notes for Claude
 
 Keyboard-first i3 desktop for an OPPO Pad 4 Pro (ColorOS / Android 16) on **Termux native + Termux:X11**.
-Synced via GitHub (`git@github.com:ian902792/omarchy-pad.git`, private). Copies:
+Synced via GitHub (`git@github.com:ian902792/omarchy-pad.git`). Copies:
 - tablet: `/data/data/com.termux/files/home/GitHub/omarchy-pad` (= `~/GitHub/omarchy-pad` in Termux)
 - Mac: `/Users/ianyu/GitHub/omarchy-pad`
 
@@ -82,3 +82,4 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
 
 Edit in the repo, apply (table above), verify on screen, then `git commit` and `git push`; the other machine does `git pull`.
 Shell scripts target Termux bash (`#!/data/data/com.termux/files/usr/bin/bash`); no `/bin/sh`, no `/usr/bin/env` paths in configs.
+Moving the tablet checkout breaks every symlink in `~/.config` (i3 then falls back to its default config: no bar, gaps or workspaces); re-run `install.sh` from the new path.

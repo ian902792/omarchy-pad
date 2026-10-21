@@ -3,7 +3,7 @@
 #   omp-cal [YYYY-MM]   ← / → change month, Esc closes
 # Taiwan: 人事行政總處 calendar via github.com/ruyut/TaiwanCalendar, cached per year in ~/.cache/omarchy-pad.
 # NYSE: full closures from the `holidays` package (install.sh pip-installs it); 13:00 ET early closes by rule.
-import calendar, datetime as dt, html, json, os, subprocess, sys, urllib.request
+import calendar, datetime as dt, html, json, os, re, subprocess, sys, unicodedata, urllib.request
 
 CACHE = os.path.expanduser("~/.cache/omarchy-pad")
 TW_URL = "https://cdn.jsdelivr.net/gh/ruyut/TaiwanCalendar/data/{}.json"
@@ -49,6 +49,10 @@ def nyse(year):
 
 def wd(d):
     return WEEK[(d.weekday() + 1) % 7]
+
+
+def width(markup):   # terminal columns of a markup row: CJK characters take two
+    return sum(2 if unicodedata.east_asian_width(c) in "WF" else 1 for c in html.unescape(re.sub("<[^>]+>", "", markup)))
 
 
 def span(text, **attrs):   # one Pango span; attrs never repeat, a repeated one breaks the whole markup
@@ -132,6 +136,8 @@ def main():
     year, month = map(int, arg.split("-"))
     while True:
         msg, rows = render(year, month)
+        # rows stay left-aligned, the block sits in the middle; ch is the 12 pt default font, rows use SMALL (10 pt)
+        left = max(0, (58 - max(map(width, rows)) * 10 // 12) // 2)
         r = subprocess.run(["rofi", "-dmenu", "-i", "-no-custom", "-markup-rows", "-dpi", os.environ.get("OMP_DPI", "180"),
                             "-p", "󰃭", "-mesg", msg,
                             "-kb-move-char-back", "Control+b", "-kb-move-char-forward", "Control+f",
@@ -141,7 +147,7 @@ def main():
                                           "listview { lines: %d; scrollbar: false; } " % min(len(rows), 8),
                             "-theme-str", 'entry { placeholder: "搜尋假日   ← → 換月   Esc 關閉"; }',
                             "-theme-str", f'textbox {{ font: "{BIG}"; }}',
-                            "-theme-str", f'element-text {{ font: "{SMALL}"; }}'],
+                            "-theme-str", f'element-text {{ font: "{SMALL}"; margin: 0 0 0 {left}ch; }}'],
                            input="\n".join(rows), capture_output=True, text=True)
         if r.returncode == 10:
             year, month = (year, month - 1) if month > 1 else (year - 1, 12)

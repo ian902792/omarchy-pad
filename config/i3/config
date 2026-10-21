@@ -45,7 +45,7 @@ bindsym $mod+Shift+s exec --no-startup-id omp-shot
 #: Space / 1…0 | 選字（- = 翻頁）
 bindsym $mod+i exec --no-startup-id fcitx5-remote -t
 # Speak Only voice input: Termux:X11's KeyInterceptor hides keys from Android IMEs, so i3 forwards them
-#: 語音輸入（Speak Only，再按一次送出；沒用 Speak Only 時照常打 \）
+#: 語音輸入（Speak Only）
 bindsym backslash exec --no-startup-id omp-speak
 #: 語音翻譯（Speak Only）
 bindsym Control+backslash exec --no-startup-id omp-speak translate
@@ -56,14 +56,14 @@ mode "speakonly-pass" {
 
 # --- windows ---
 #: 關閉
-#: Super+C / V | 複製 / 貼上（kitty；也能貼 Android 的文字）
+#: Super+C / V | 複製 / 貼上（與 Android 同步）
 bindsym $mod+w kill
 #: 全螢幕
 bindsym $mod+f fullscreen toggle
 bindsym $mod+Shift+v floating toggle
 bindsym $mod+j split toggle
 # Super+S: tabs <-> side by side; side by side is laid out by omp-tile (2: 1|2, 3: 1|2/3, 4: grid)
-#: 分頁 / 並排（3 個：左一右二，4 個：田字）
+#: 分頁 / 並排（自動排版）
 bindsym $mod+s exec --no-startup-id omp-tile toggle
 
 #: Super+← → | 切換分頁
@@ -99,7 +99,7 @@ bindsym $mod+Shift+6 move container to workspace number 6
 
 # --- session ---
 bindsym $mod+Shift+r restart
-#: 關閉桌面（同 stop.sh，會先確認）
+#: 關閉桌面（會先確認）
 bindsym $mod+Escape exec omp-keys shutdown
 
 bar {

@@ -106,8 +106,10 @@ def show():
     menu = [f'<span color="{KEY}">{html.escape(k.rjust(w))}</span>   {html.escape(d)}' for k, d, _ in rows]
     msg = mesg()
     cols = max(width(l) for l in lines + re.sub("<[^>]+>", "", msg).split("\n")) + 4   # + element padding
+    left = (cols - 4 - max(width(l) for l in lines)) // 2   # rows stay left-aligned, the block sits in the middle
     i = rofi(menu, "-p", "Keys", "-mesg", msg,
-             "-theme-str", f"window {{ width: {cols}ch; }} textbox {{ horizontal-align: 0.5; }}")
+             "-theme-str", f"window {{ width: {cols}ch; }} textbox {{ horizontal-align: 0.5; }} "
+                           f"element-text {{ margin: 0 0 0 {left}ch; }}")
     if i is not None and rows[i][2]:
         subprocess.run(["i3-msg", "-q", rows[i][2]])
 

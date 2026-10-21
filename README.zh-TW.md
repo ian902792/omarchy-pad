@@ -40,6 +40,9 @@ flowchart LR
 </tr>
 </table>
 
+![新桌面：只有桌布和狀態列](docs/screenshots/empty.jpg)
+<sub>新桌面：只有桌布和狀態列（桌面編號、中／英、Mac、記憶體、溫度、電池、時間）</sub>
+
 ## 需要準備
 
 ```mermaid

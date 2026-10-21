@@ -40,6 +40,9 @@ flowchart LR
 </tr>
 </table>
 
+![A fresh desktop: just the wallpaper and the status bar](docs/screenshots/empty.jpg)
+<sub>A fresh desktop: just the wallpaper and the status bar (workspaces, input language, Mac, memory, temperature, battery, clock)</sub>
+
 ## What you need
 
 ```mermaid

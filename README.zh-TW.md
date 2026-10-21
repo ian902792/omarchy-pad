@@ -57,12 +57,12 @@ flowchart LR
 
 ## 最簡單的方法：交給 AI agent
 
-這個 repo 全是文字設定，[`CLAUDE.md`](CLAUDE.md) 記錄了每個檔案的用途和踩過的坑，所以 Claude Code 這類 agent 可以幫你從安裝做到客製化。
+這個 repo 全是文字設定，[`AGENTS.md`](AGENTS.md) 記錄了每個檔案的用途和踩過的坑，所以 Claude Code 這類 agent 可以幫你從安裝做到客製化。
 把下面這段貼給它，改掉 `< >` 就好：
 
 ```text
 幫我在 Android 平板上安裝並客製化 https://github.com/ian902792/omarchy-pad 。
-先讀 README.md 和 CLAUDE.md，動手前告訴我你要改什麼。
+先讀 README.md 和 AGENTS.md，動手前告訴我你要改什麼。
 我的平板：<型號>
 我想改：<例：配色換成 Catppuccin、拿掉月曆、不需要連 Mac>
 ```
@@ -153,7 +153,7 @@ flowchart TD
     P -->|"系統更新之後怪怪的"| F1
     P -->|"點網址沒反應"| F2["設定 → Termux → 預設開啟<br>改成「在瀏覽器中開啟」"]
     P -->|"畫面錯亂（非 Adreno GPU）"| F3["start.sh 改用軟體繪圖<br>（問 AI agent）"]
-    P -->|"其他"| F4["把狀況貼給 AI agent<br>它會查 CLAUDE.md"]
+    P -->|"其他"| F4["把狀況貼給 AI agent<br>它會查 AGENTS.md"]
 ```
 
 ## 想改成自己的樣子
@@ -183,7 +183,7 @@ flowchart LR
     Repo -->|"bin/ 連結到"| lb["~/.local/bin/"]
 ```
 
-改 repo 裡的檔案就等於改了平板上的設定；每個檔案改完怎麼生效，查 [`CLAUDE.md`](CLAUDE.md) 的表格。
+改 repo 裡的檔案就等於改了平板上的設定；每個檔案改完怎麼生效，查 [`AGENTS.md`](AGENTS.md) 的表格。
 
 </details>
 

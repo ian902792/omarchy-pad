@@ -57,12 +57,12 @@ Then download four apps from GitHub (**not the Play Store versions**: they can't
 
 ## The easy way: let an AI agent do it
 
-This repo is all plain-text config. [`CLAUDE.md`](CLAUDE.md) records what every file does and the pitfalls already hit, so an agent like Claude Code can take you from install to customization.
+This repo is all plain-text config. [`AGENTS.md`](AGENTS.md) records what every file does and the pitfalls already hit, so an agent like Claude Code can take you from install to customization.
 Paste this into it and fill in the `< >` parts:
 
 ```text
 Help me install and customize https://github.com/ian902792/omarchy-pad on my Android tablet.
-Read README.md and CLAUDE.md first, and tell me what you plan to change before you do it.
+Read README.md and AGENTS.md first, and tell me what you plan to change before you do it.
 My tablet: <model>
 I want to: <e.g. switch colors to Catppuccin, remove the calendar, no Mac connection>
 ```
@@ -153,7 +153,7 @@ flowchart TD
     P -->|"Odd after a system update"| F1
     P -->|"Tapping a link does nothing"| F2["Settings → Termux → Open by default<br>→ Open in browser"]
     P -->|"Garbled screen (non-Adreno GPU)"| F3["Switch start.sh to software rendering<br>(ask the AI agent)"]
-    P -->|"Something else"| F4["Describe it to the AI agent<br>it will check CLAUDE.md"]
+    P -->|"Something else"| F4["Describe it to the AI agent<br>it will check AGENTS.md"]
 ```
 
 ## Make it your own
@@ -183,7 +183,7 @@ flowchart LR
     Repo -->|"bin/ linked to"| lb["~/.local/bin/"]
 ```
 
-Editing a file in the repo edits the tablet's settings. How each file takes effect is in the table in [`CLAUDE.md`](CLAUDE.md).
+Editing a file in the repo edits the tablet's settings. How each file takes effect is in the table in [`AGENTS.md`](AGENTS.md).
 
 </details>
 

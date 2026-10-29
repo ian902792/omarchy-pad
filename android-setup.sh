@@ -27,7 +27,7 @@ done
 echo "Keyboard: Termux:X11 KeyInterceptor (Super keys; without it the Android IME eats keys)"
 ki=com.termux.x11/com.termux.x11.utils.KeyInterceptor
 svcs=$(a settings get secure enabled_accessibility_services)
-case ":$svcs:" in *":$ki:"*) has=yes ;; *) has=no ;; esac
+case ":$svcs:" in *":$ki:"*|*":com.termux.x11/.utils.KeyInterceptor:"*) has=yes ;; *) has=no ;; esac   # Termux:X11 writes the short form
 want="$ki"; [ "$svcs" != null ] && [ -n "$svcs" ] && want="$svcs:$ki"   # keep other services
 report "accessibility service" "$has" yes a settings put secure enabled_accessibility_services "$want"
 report "accessibility enabled" "$(a settings get secure accessibility_enabled)" 1 \

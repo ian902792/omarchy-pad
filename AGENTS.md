@@ -31,7 +31,7 @@ Synced via GitHub (`git@github.com:ian902792/omarchy-pad.git`). Copies:
 | `bin/omp-tile` (side-by-side layouts; Super+S = `omp-tile toggle`) | daemon from i3 `exec_always` | `i3-msg restart`; `omp-tile test` = self-check |
 | `bin/omp-wallpaper` (feh, re-set on every RandR resize: displayScale lands after i3 starts, else 2x2 tiling) | i3 `exec_always` | `i3-msg restart` |
 | `bin/omp-keys` (key cheat sheet + system info: first entry of Super+Space, rofi combi; rows = `#:` lines in `config/i3/config`, Enter runs the binding) | rofi script mode | immediate |
-| `bin/omp-speak` (`\` / Ctrl+`\`: toggles Speak Only voice input via `am broadcast` when it is the active Android IME, else types the key with xdotool from the empty `speakonly-pass` mode; Termux:X11's KeyInterceptor hides keys from IMEs) | i3 `bindsym` | immediate |
+| `bin/omp-speak` (`\` / Ctrl+`\`: toggles Speak Only voice input via `am broadcast` TOGGLE when it is the active Android IME, else ACTIVATE switches to it for one dictation and back (e.g. LIME stays the Android IME); if neither answers it types the key with xdotool from the empty `speakonly-pass` mode; Termux:X11's KeyInterceptor hides keys from IMEs) | i3 `bindsym` | immediate |
 | `bin/*` | `~/.local/bin/*` | immediate |
 
 Session: `start.sh` (starts X11 + i3, sshd, wake lock; if i3 already runs it only raises Termux:X11, `--restart` restarts) / `stop.sh` (also Super+Escape and the launcher's Shut Down Desktop, via `omp-keys shutdown`). `install.sh` is idempotent (packages, links, Claude Code).
@@ -83,6 +83,15 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
   candidate window unless a fake `org.fcitx.Fcitx5.VirtualKeyboard` D-Bus owner exists. Do not mark classicui
   `UIType=OnScreenKeyboard` (segfaults in updateVirtualKeyboardVisibility). Restarting fcitx5 breaks IBus in
   already-open kitty windows (open a new one). Check state: `CurrentUI` on `org.fcitx.Fcitx5 /controller` should be `classicui`.
+- Speak Only ACTIVATE (switching the IME from Termux) needs, once per install: `adb shell pm grant app.speakonly.ime
+  android.permission.WRITE_SECURE_SETTINGS` (needs "Disable system optimization", see above) and ColorOS 自動啟動 on for
+  Speak Only (else "OplusAppStartupManager: prevent start by broadcast" in logcat, result=0). Battery "完全允許背景行為"
+  and the Doze whitelist did not help.
+- The keyboard's mic key sends Android KEYCODE_F13 (326, new in Android 16). Termux:X11's android_to_linux_keycode
+  table (lorie.h) stops at 319, so the key never reaches X; in Android, ColorOS maps it to Google voice but skips that
+  on this CN-region device (`region: CN` in logcat), so it does nothing anywhere.
+- Super in Android always starts 小布 (private `ACTIVATE_SPEECH_ASSIST` intent), whatever the default assistant is;
+  long-press power too. The default-assistant setting is hidden in ColorOS: `am start -a android.settings.VOICE_INPUT_SETTINGS`.
 - Tailscale MagicDNS names don't resolve in Termux; use IPs (Mac = `MAC=` in `~/.config/omarchy-pad/env`).
 
 ## Workflow

@@ -53,7 +53,9 @@ Run GUI commands from a shell with `DISPLAY=:0`. Test keys with `xdotool key sup
 - Physical keyboard: Super works, but **Super+Return is taken by ColorOS**; Super+T opens a terminal.
 - Keys reach X only through Termux:X11's KeyInterceptor accessibility service. ColorOS sometimes turns it off;
   then Super dies AND the Android IME (LIME) eats keys and composes (cursor jumps back, wrong chars).
-  Fix: `./android-setup.sh` on the Mac (pad on USB).
+  Fix: `./android-setup.sh` on the Mac (pad on USB). It also grants Termux:X11 WRITE_SECURE_SETTINGS so it re-enables
+  the service itself; ColorOS blocks that `pm grant` until Developer options → "Disable system optimization" is on
+  (ColorOS 16 hides it in Chinese; switch the system language to English to see it).
   Termux itself can't read or write secure settings.
 - i3 config has no trailing comments on `bindsym` lines (they become part of the command).
 - Termux:Widget start: `start.sh` takes the wake lock first and `stop.sh --restart` keeps it; dropping it lets

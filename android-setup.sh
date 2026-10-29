@@ -32,6 +32,9 @@ want="$ki"; [ "$svcs" != null ] && [ -n "$svcs" ] && want="$svcs:$ki"   # keep o
 report "accessibility service" "$has" yes a settings put secure enabled_accessibility_services "$want"
 report "accessibility enabled" "$(a settings get secure accessibility_enabled)" 1 \
     a settings put secure accessibility_enabled 1
+# lets Termux:X11 turn KeyInterceptor back on itself (enableAccessibilityServiceAutomatically below) when ColorOS drops it
+wss=$(a dumpsys package com.termux.x11 | grep -q 'WRITE_SECURE_SETTINGS: granted=true' && echo yes || echo no)
+report "WRITE_SECURE_SETTINGS" "$wss" yes a pm grant com.termux.x11 android.permission.WRITE_SECURE_SETTINGS
 
 echo "Phantom process killer (Android kills the whole desktop past 32 child processes)"
 report "device_config sync" "$(a device_config get_sync_disabled_for_tests)" persistent \
@@ -53,7 +56,7 @@ echo "Termux:X11 preferences"
 x11pref() { a am broadcast -a com.termux.x11.CHANGE_PREFERENCE -p com.termux.x11 "$@"; }
 prefs=$(x11pref -e list null)
 for kv in fullscreen:true hideCutout:true keepScreenOn:true clipboardEnable:true dexMetaKeyCapture:true \
-          showAdditionalKbd:false additionalKbdVisible:false preferScancodes:false displayResolutionMode:scaled; do
+          showAdditionalKbd:false additionalKbdVisible:false preferScancodes:false displayResolutionMode:scaled enableAccessibilityServiceAutomatically:true; do
     k=${kv%%:*} v=${kv#*:}
     cur=$(printf '%s\n' "$prefs" | sed -n "s/.*\"$k\"=\"\([^\"]*\)\".*/\1/p")
     report "$k" "$cur" "$v" x11pref -e "$k" "$v"

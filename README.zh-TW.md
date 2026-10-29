@@ -101,6 +101,7 @@ git clone https://github.com/ian902792/omarchy-pad && cd omarchy-pad
 - 應用程式 → Termux → 預設開啟 → 「**在瀏覽器中開啟**」
 
 **④ 打開 Termux:Widget App**，按一次 **CREATE SHORTCUTS**。
+接著長按 Termux:Widget 圖示，把 **Desktop Start**（和 **Desktop Stop**）拖到桌面，就有各自的圖示。
 
 > 想用 Super+M 連回 Mac？請 AI agent 幫你設定，或看 `env.example`。
 

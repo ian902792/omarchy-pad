@@ -20,7 +20,7 @@ Synced via GitHub (`git@github.com:ian902792/omarchy-pad.git`). Copies:
 | `config/rofi/config.rasi`, `config/dunst/dunstrc` | `~/.config/{rofi,dunst}/` | next launch / `pkill dunst` |
 | `config/gtk-3.0/{settings.ini,gtk.css,bookmarks}` | `~/.config/gtk-3.0` | restart the app (`thunar -q` quits Thunar's daemon) |
 | Thunar sidebar width / hidden Network | xfconf, set by an `exec xfconf-query` line in the i3 config | next desktop start |
-| `config/Xresources` | `~/.Xresources` | restart session (`start.sh`) |
+| `config/Xresources` | `~/.Xresources` | restart session (`start.sh --restart`) |
 | `config/starship.toml`, `config/bashrc` | `~/.config/starship.toml`, sourced by `~/.bashrc` | new shell |
 | `config/gitconfig` | included from `~/.gitconfig` (delta pager) | immediate |
 | `config/lazygit/config.yml` | `~/.config/lazygit/config.yml` | next `lg` |
@@ -34,7 +34,7 @@ Synced via GitHub (`git@github.com:ian902792/omarchy-pad.git`). Copies:
 | `bin/omp-speak` (`\` / Ctrl+`\`: toggles Speak Only voice input via `am broadcast` when it is the active Android IME, else types the key with xdotool from the empty `speakonly-pass` mode; Termux:X11's KeyInterceptor hides keys from IMEs) | i3 `bindsym` | immediate |
 | `bin/*` | `~/.local/bin/*` | immediate |
 
-Session: `start.sh` (restarts X11 + i3, starts sshd, wake lock) / `stop.sh` (also Super+Escape and the launcher's Shut Down Desktop, via `omp-keys shutdown`). `install.sh` is idempotent (packages, links, Claude Code).
+Session: `start.sh` (starts X11 + i3, sshd, wake lock; if i3 already runs it only raises Termux:X11, `--restart` restarts) / `stop.sh` (also Super+Escape and the launcher's Shut Down Desktop, via `omp-keys shutdown`). `install.sh` is idempotent (packages, links, Claude Code).
 Termux:Widget entries: `~/.shortcuts/tasks/` and `~/.termux/widget/dynamic_shortcuts/` (written by install.sh).
 Logs: `$TMPDIR/omarchy-pad.log` (X server + session stderr).
 

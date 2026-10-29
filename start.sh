@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-# Start Termux:X11 + i3. Safe to re-run (restarts the session).
+# Start Termux:X11 + i3. If the desktop already runs, only bring it up front; --restart starts a new session.
 # Detach first: Termux:Widget kills the shortcut's whole process group when the script exits, which took the
 # X server down with it (nohup only covers SIGHUP). setsid gives everything below its own session.
 [ -n "$OMP_DETACHED" ] || OMP_DETACHED=1 exec setsid "$0" "$@"
@@ -7,6 +7,10 @@ termux-wake-lock   # first: keeps TermuxService (and this script) alive when lau
 # Bring Termux:X11 up front. Works from the Termux app or ssh; from Termux:Widget ColorOS blocks it
 # (BAL_BLOCK in logcat), so after Desktop Start the user taps the Termux:X11 icon.
 am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity >/dev/null 2>&1
+if [ "$1" != --restart ] && pgrep -x i3 >/dev/null; then
+    termux-toast "Desktop is running: tap Termux:X11" 2>/dev/null
+    exit 0
+fi
 "$(dirname "$0")/stop.sh" --restart
 . ~/.config/omarchy-pad/env 2>/dev/null
 # X renders at OMP_SCALE % of the native 3392x2400 and Termux:X11 upscales it. Every frame kitty draws is

@@ -76,6 +76,27 @@ for n in start stop; do
     chmod +x "$f"
     cp "$f" "$dyn/"
 done
+# Home-screen icons (Tokyo Night) for launcher shortcuts made from these entries: start = tiled windows, stop = power
+mkdir -p ~/.shortcuts/icons && chmod 700 ~/.shortcuts/icons
+python - <<'EOF'
+import os
+from PIL import Image, ImageDraw
+d = os.path.expanduser("~/.shortcuts/icons/")
+def icon(name, draw):
+    im = Image.new("RGBA", (768, 768))
+    g = ImageDraw.Draw(im)
+    g.rounded_rectangle((0, 0, 767, 767), 170, fill="#1a1b26")
+    draw(g)
+    im.resize((192, 192), Image.LANCZOS).save(d + name + ".png")
+def start(g):
+    for box, c in [((170, 170, 370, 598), "#7aa2f7"), ((398, 170, 598, 370), "#bb9af7"), ((398, 398, 598, 598), "#7dcfff")]:
+        g.rounded_rectangle(box, 36, fill=c)
+def stop(g):
+    g.arc((174, 194, 594, 614), 300, 240, fill="#f7768e", width=60)
+    g.rounded_rectangle((354, 134, 414, 404), 30, fill="#f7768e")
+icon("Desktop Start", start)
+icon("Desktop Stop", stop)
+EOF
 
 echo "==> wallpaper (Omarchy Tokyo Night: 4-sunset-lake, downloaded, not kept in the repo)"
 wp=~/.local/share/omarchy-pad/wallpaper.jpg

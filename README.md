@@ -101,6 +101,7 @@ git clone https://github.com/ian902792/omarchy-pad && cd omarchy-pad
 - Apps → Termux → Open by default → "**Open in browser**"
 
 **④ Open the Termux:Widget app** and tap **CREATE SHORTCUTS** once.
+Then long-press the Termux:Widget icon and drag **Desktop Start** (and **Desktop Stop**) onto the home screen: they get their own icons.
 
 > Want Super+M to connect to your Mac? Ask the AI agent to set it up, or see `env.example`.
 
